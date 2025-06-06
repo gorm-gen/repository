@@ -161,6 +161,7 @@ package {{.Package}}
 
 import (
 	"context"
+	"runtime/debug"
 
 	"go.uber.org/zap"
 	"gorm.io/gen"
@@ -243,7 +244,7 @@ func (c *_count) Do(ctx context.Context) (int64, error) {
 	count, err := cr.Count()
 	if err != nil {
 		if {{.RepoPkgName}}.IsRealErr(err) {
-			c.core.logger.Error("【{{.StructName}}.Count】失败", zap.Error(err))
+			c.core.logger.Error("【{{.StructName}}.Count】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 		}
 		return 0, err
 	}
@@ -261,6 +262,7 @@ package {{.Package}}
 
 import (
 	"context"
+	"runtime/debug"
 
 	"go.uber.org/zap"
 
@@ -350,7 +352,7 @@ func (c *_create) Do(ctx context.Context) (err error) {
 	}
 	if err != nil {
 		if {{.RepoPkgName}}.IsRealErr(err) {
-			c.core.logger.Error("【{{.StructName}}.Create】失败", zap.Error(err))
+			c.core.logger.Error("【{{.StructName}}.Create】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 		}
 		return err
 	}
@@ -368,6 +370,7 @@ package {{.Package}}
 
 import (
 	"context"
+	"runtime/debug"
 
 	"go.uber.org/zap"
 	"gorm.io/gen"
@@ -450,7 +453,7 @@ func (d *_delete) Do(ctx context.Context) (int64, error) {
 	res, err := dr.Delete()
 	if err != nil {
 		if {{.RepoPkgName}}.IsRealErr(err) {
-			d.core.logger.Error("【{{.StructName}}.Delete】失败", zap.Error(err))
+			d.core.logger.Error("【{{.StructName}}.Delete】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 		}
 		return 0, err
 	}
@@ -468,6 +471,7 @@ package {{.Package}}
 
 import (
 	"context"
+	"runtime/debug"
 
 	"go.uber.org/zap"
 	"gorm.io/gen"
@@ -622,7 +626,7 @@ func (f *_first) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error
 	res, err := fr.First()
 	if err != nil {
 		if {{.RepoPkgName}}.IsRealErr(err) {
-			f.core.logger.Error("【{{.StructName}}.First】失败", zap.Error(err))
+			f.core.logger.Error("【{{.StructName}}.First】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 		}
 		return nil, err
 	}
@@ -640,6 +644,7 @@ package {{.Package}}
 
 import (
 	"context"
+	"runtime/debug"
 
 	"go.uber.org/zap"
 	"gorm.io/gen"
@@ -794,7 +799,7 @@ func (l *_last) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 	res, err := lr.Last()
 	if err != nil {
 		if {{.RepoPkgName}}.IsRealErr(err) {
-			l.core.logger.Error("【{{.StructName}}.Last】失败", zap.Error(err))
+			l.core.logger.Error("【{{.StructName}}.Last】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 		}
 		return nil, err
 	}
@@ -812,6 +817,7 @@ package {{.Package}}
 
 import (
 	"context"
+	"runtime/debug"
 
 	page "github.com/gorm-gen/paginate/gen"
 	"go.uber.org/zap"
@@ -995,7 +1001,7 @@ func (l *_list) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, erro
 	list, err := lr.Find()
 	if err != nil {
 		if {{.RepoPkgName}}.IsRealErr(err) {
-			l.core.logger.Error("【{{.StructName}}.List】失败", zap.Error(err))
+			l.core.logger.Error("【{{.StructName}}.List】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 		}
 		return nil, err
 	}
@@ -1013,6 +1019,7 @@ package {{.Package}}
 
 import (
 	"context"
+	"runtime/debug"
 
 	"go.uber.org/zap"
 	"gorm.io/gen"
@@ -1183,7 +1190,7 @@ func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 	res, err := tr.Take()
 	if err != nil {
 		if {{.RepoPkgName}}.IsRealErr(err) {
-			t.core.logger.Error("【{{.StructName}}.Take】失败", zap.Error(err))
+			t.core.logger.Error("【{{.StructName}}.Take】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 		}
 		return nil, err
 	}
@@ -1201,6 +1208,7 @@ package {{.Package}}
 
 import (
 	"context"
+	"runtime/debug"
 
 	"go.uber.org/zap"
 	"gorm.io/gen"
@@ -1302,7 +1310,7 @@ func (u *_update) Do(ctx context.Context) (int64, error) {
 	res, err := ur.UpdateSimple(columns...)
 	if err != nil {
 		if {{.RepoPkgName}}.IsRealErr(err) {
-			u.core.logger.Error("【{{.StructName}}.Update】失败", zap.Error(err))
+			u.core.logger.Error("【{{.StructName}}.Update】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 		}
 		return 0, err
 	}
@@ -1320,6 +1328,7 @@ package {{.Package}}
 
 import (
 	"context"
+	"runtime/debug"
 
 	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
@@ -1407,7 +1416,7 @@ func (s *_sum) Do(ctx context.Context) (decimal.Decimal, error) {
 	var data Sum
 	if err := sr.Scan(&data); err != nil {
 		if {{.RepoPkgName}}.IsRealErr(err) {
-			s.core.logger.Error("【{{.StructName}}.Sum】失败", zap.Error(err))
+			s.core.logger.Error("【{{.StructName}}.Sum】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 		}
 		return decimal.Zero, err
 	}
@@ -1539,7 +1548,7 @@ func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}
 			count, err := cr.Where(_conditions...).Count()
 			if err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
-					c.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingCount.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err))
+					c.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingCount.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 				}
 				errChan {{.ChanSign}} err
 				return
@@ -1812,7 +1821,7 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 			res, err := dr.Where(_conditions...).Delete()
 			if err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
-					d.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingDelete.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err))
+					d.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingDelete.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 				}
 				errChan {{.ChanSign}} err
 				return
@@ -2030,7 +2039,7 @@ func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}
 			res, err := fr.Where(_conditions...).First()
 			if err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
-					f.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingFirst.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err))
+					f.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingFirst.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 				}
 				if !errors.Is(err, gorm.ErrRecordNotFound) {
 					errChan {{.ChanSign}} err
@@ -2244,7 +2253,7 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 			res, err := fr.Where(_conditions...).Last()
 			if err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
-					l.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingLast.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err))
+					l.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingLast.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 				}
 				if !errors.Is(err, gorm.ErrRecordNotFound) {
 					errChan {{.ChanSign}} err
@@ -2569,7 +2578,7 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 					var res []*{{.ModelName}}.{{.StructName}}
 					if res, err = lr.Scopes(page.Paginate(vv.Page, vv.PageSize)).Find(); err != nil {
 						if {{.RepoPkgName}}.IsRealErr(err) {
-							l.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingList.%s】失败", v.ShardingValue), zap.Error(err))
+							l.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingList.%s】失败", v.ShardingValue), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 						}
 						_errChan {{.ChanSign}} err
 						return
@@ -2745,7 +2754,7 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 			var data Sum
 			if err := sr.Where(_conditions...).Scan(&data); err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
-					s.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingSum.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err))
+					s.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingSum.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 				}
 				errChan {{.ChanSign}} err
 				return
@@ -2981,7 +2990,7 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 			res, err := fr.Take()
 			if err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
-					t.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingTake.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err))
+					t.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingTake.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 				}
 				if !errors.Is(err, gorm.ErrRecordNotFound) {
 					errChan {{.ChanSign}} err
@@ -3151,7 +3160,7 @@ func (u *_shardingUpdate) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 			res, err := ur.Where(_conditions...).UpdateSimple(columns...)
 			if err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
-					u.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingUpdate.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err))
+					u.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingUpdate.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 				}
 				errChan {{.ChanSign}} err
 				return
