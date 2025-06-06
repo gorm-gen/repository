@@ -43,17 +43,13 @@ func New(opts ...Option) *Repository {
 	return repo
 }
 
+// Generate 生成普通仓库
 func (r *Repository) Generate(models ...interface{}) error {
 	if len(models) == 0 {
 		return nil
 	}
 
-	if err := os.MkdirAll(r.repoPath, os.ModePerm); err != nil {
-		return err
-	}
-
-	// repositories/base.go
-	if err := r.repositoriesBase(); err != nil {
+	if err := r.generateRepositoriesBase(); err != nil {
 		return err
 	}
 
@@ -66,7 +62,29 @@ func (r *Repository) Generate(models ...interface{}) error {
 	return nil
 }
 
+func (r *Repository) generateRepositoriesBase() error {
+	if err := os.MkdirAll(r.repoPath, os.ModePerm); err != nil {
+		return err
+	}
+
+	// repositories/base.go
+	if err := r.repositoriesBase(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// ShardingGenerate 生成分表仓库
 func (r *Repository) ShardingGenerate(shardingStructName string, models ...interface{}) error {
+	if len(models) == 0 {
+		return nil
+	}
+
+	if err := r.generateRepositoriesBase(); err != nil {
+		return err
+	}
+
 	for _, model := range models {
 		if err := r.generate(model, shardingStructName); err != nil {
 			return err
