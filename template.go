@@ -178,7 +178,7 @@ type _count struct {
 	conditionOpts []ConditionOption
 }
 
-// Count 获取数据总条数
+// Count 获取数据总记录
 func ({{.Abbr}} *{{.StructName}}) Count() *_count {
 	return &_count{
 		core:          {{.Abbr}},
@@ -215,7 +215,7 @@ func (c *_count) Where(opts ...ConditionOption) *_count {
 	return c
 }
 
-// Do 执行获取数据总条数
+// Do 执行获取数据总记录
 func (c *_count) Do(ctx context.Context) (int64, error) {
 	cq := c.core.q.{{.StructName}}
 	if c.tx != nil {
@@ -231,8 +231,8 @@ func (c *_count) Do(ctx context.Context) (int64, error) {
 	if c.unscoped {
 		cr = cr.Unscoped()
 	}
-	if len(c.conditionOpts) > 0 {
-		conditions := make([]gen.Condition, 0, len(c.conditionOpts))
+	if _len := len(c.conditionOpts); _len > 0 {
+		conditions := make([]gen.Condition, 0, _len)
 		for _, opt := range c.conditionOpts {
 			conditions = append(conditions, opt(c.core))
 		}
@@ -438,8 +438,8 @@ func (d *_delete) Do(ctx context.Context) (int64, error) {
 	if d.unscoped {
 		dr = dr.Unscoped()
 	}
-	if len(d.conditionOpts) > 0 {
-		conditions := make([]gen.Condition, 0, len(d.conditionOpts))
+	if _len := len(d.conditionOpts); _len > 0 {
+		conditions := make([]gen.Condition, 0, _len)
 		for _, opt := range d.conditionOpts {
 			conditions = append(conditions, opt(d.core))
 		}
@@ -584,11 +584,11 @@ func (f *_first) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error
 	if f.core.newTableName != nil && *f.core.newTableName != "" {
 		fr = fq.Table(*f.core.newTableName).WithContext(ctx)
 	}
-	if len(f.selects) > 0 {
+	if _len := len(f.selects); _len > 0 {
 		if f.core.newTableName == nil {
 			fr = fr.Select(f.selects...)
 		} else {
-			fs := make([]field.Expr, 0, len(f.selects))
+			fs := make([]field.Expr, 0, _len)
 			for _, v := range f.selects {
 				fs = append(fs, field.NewField(*f.core.newTableName, v.ColumnName().String()))
 			}
@@ -601,8 +601,8 @@ func (f *_first) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error
 	if (f.tx != nil || f.qTx != nil) && f.lock != nil {
 		fr = fr.Clauses(f.lock)
 	}
-	if len(f.conditionOpts) > 0 {
-		conditions := make([]gen.Condition, 0, len(f.conditionOpts))
+	if _len := len(f.conditionOpts); _len > 0 {
+		conditions := make([]gen.Condition, 0, _len)
 		for _, opt := range f.conditionOpts {
 			conditions = append(conditions, opt(f.core))
 		}
@@ -610,8 +610,8 @@ func (f *_first) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error
 			fr = fr.Where(conditions...)
 		}
 	}
-	if len(f.relationOpts) > 0 {
-		relations := make([]field.RelationField, 0, len(f.relationOpts))
+	if _len := len(f.relationOpts); _len > 0 {
+		relations := make([]field.RelationField, 0, _len)
 		for _, opt := range f.relationOpts {
 			relations = append(relations, opt(f.core))
 		}
@@ -756,11 +756,11 @@ func (l *_last) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 	if l.core.newTableName != nil && *l.core.newTableName != "" {
 		lr = lq.Table(*l.core.newTableName).WithContext(ctx)
 	}
-	if len(l.selects) > 0 {
+	if _len := len(l.selects); _len > 0 {
 		if l.core.newTableName == nil {
 			lr = lr.Select(l.selects...)
 		} else {
-			fs := make([]field.Expr, 0, len(l.selects))
+			fs := make([]field.Expr, 0, _len)
 			for _, v := range l.selects {
 				fs = append(fs, field.NewField(*l.core.newTableName, v.ColumnName().String()))
 			}
@@ -773,8 +773,8 @@ func (l *_last) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 	if (l.tx != nil || l.qTx != nil) && l.lock != nil {
 		lr = lr.Clauses(l.lock)
 	}
-	if len(l.conditionOpts) > 0 {
-		conditions := make([]gen.Condition, 0, len(l.conditionOpts))
+	if _len := len(l.conditionOpts); _len > 0 {
+		conditions := make([]gen.Condition, 0, _len)
 		for _, opt := range l.conditionOpts {
 			conditions = append(conditions, opt(l.core))
 		}
@@ -782,8 +782,8 @@ func (l *_last) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 			lr = lr.Where(conditions...)
 		}
 	}
-	if len(l.relationOpts) > 0 {
-		relations := make([]field.RelationField, 0, len(l.relationOpts))
+	if _len := len(l.relationOpts); _len > 0 {
+		relations := make([]field.RelationField, 0, _len)
 		for _, opt := range l.relationOpts {
 			relations = append(relations, opt(l.core))
 		}
@@ -945,11 +945,11 @@ func (l *_list) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, erro
 	if l.core.newTableName != nil && *l.core.newTableName != "" {
 		lr = lq.Table(*l.core.newTableName).WithContext(ctx)
 	}
-	if len(l.selects) > 0 {
+	if _len := len(l.selects); _len > 0 {
 		if l.core.newTableName == nil {
 			lr = lr.Select(l.selects...)
 		} else {
-			fs := make([]field.Expr, 0, len(l.selects))
+			fs := make([]field.Expr, 0, _len)
 			for _, v := range l.selects {
 				fs = append(fs, field.NewField(*l.core.newTableName, v.ColumnName().String()))
 			}
@@ -962,8 +962,8 @@ func (l *_list) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, erro
 	if (l.tx != nil || l.qTx != nil) && l.lock != nil {
 		lr = lr.Clauses(l.lock)
 	}
-	if len(l.conditionOpts) > 0 {
-		conditions := make([]gen.Condition, 0, len(l.conditionOpts))
+	if _len := len(l.conditionOpts); _len > 0 {
+		conditions := make([]gen.Condition, 0, _len)
 		for _, opt := range l.conditionOpts {
 			conditions = append(conditions, opt(l.core))
 		}
@@ -971,8 +971,8 @@ func (l *_list) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, erro
 			lr = lr.Where(conditions...)
 		}
 	}
-	if len(l.orderOpts) > 0 {
-		orders := make([]field.Expr, 0, len(l.orderOpts))
+	if _len := len(l.orderOpts); _len > 0 {
+		orders := make([]field.Expr, 0, _len)
 		for _, opt := range l.orderOpts {
 			orders = append(orders, opt(l.core))
 		}
@@ -983,8 +983,8 @@ func (l *_list) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, erro
 	if l.page > 0 && l.pageSize > 0 {
 		lr = lr.Scopes(page.Paginate(l.page, l.pageSize))
 	}
-	if len(l.relationOpts) > 0 {
-		relations := make([]field.RelationField, 0, len(l.relationOpts))
+	if _len := len(l.relationOpts); _len > 0 {
+		relations := make([]field.RelationField, 0, _len)
 		for _, opt := range l.relationOpts {
 			relations = append(relations, opt(l.core))
 		}
@@ -1136,11 +1136,11 @@ func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 	if t.core.newTableName != nil && *t.core.newTableName != "" {
 		tr = tq.Table(*t.core.newTableName).WithContext(ctx)
 	}
-	if len(t.selects) > 0 {
+	if _len := len(t.selects); _len > 0 {
 		if t.core.newTableName == nil {
 			tr = tr.Select(t.selects...)
 		} else {
-			fs := make([]field.Expr, 0, len(t.selects))
+			fs := make([]field.Expr, 0, _len)
 			for _, v := range t.selects {
 				fs = append(fs, field.NewField(*t.core.newTableName, v.ColumnName().String()))
 			}
@@ -1153,8 +1153,8 @@ func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 	if (t.tx != nil || t.qTx != nil) && t.lock != nil {
 		tr = tr.Clauses(t.lock)
 	}
-	if len(t.conditionOpts) > 0 {
-		conditions := make([]gen.Condition, 0, len(t.conditionOpts))
+	if _len := len(t.conditionOpts); _len > 0 {
+		conditions := make([]gen.Condition, 0, _len)
 		for _, opt := range t.conditionOpts {
 			conditions = append(conditions, opt(t.core))
 		}
@@ -1162,8 +1162,8 @@ func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 			tr = tr.Where(conditions...)
 		}
 	}
-	if len(t.orderOpts) > 0 {
-		orders := make([]field.Expr, 0, len(t.orderOpts))
+	if _len := len(t.orderOpts); _len > 0 {
+		orders := make([]field.Expr, 0, _len)
 		for _, opt := range t.orderOpts {
 			orders = append(orders, opt(t.core))
 		}
@@ -1171,8 +1171,8 @@ func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 			tr = tr.Order(orders...)
 		}
 	}
-	if len(t.relationOpts) > 0 {
-		relations := make([]field.RelationField, 0, len(t.relationOpts))
+	if _len := len(t.relationOpts); _len > 0 {
+		relations := make([]field.RelationField, 0, _len)
 		for _, opt := range t.relationOpts {
 			relations = append(relations, opt(t.core))
 		}
@@ -1265,7 +1265,8 @@ func (u *_update) Where(opts ...ConditionOption) *_update {
 
 // Do 执行更新数据
 func (u *_update) Do(ctx context.Context) (int64, error) {
-	if len(u.updateOpts) == 0 {
+	_length := len(u.updateOpts)
+	if _length == 0 {
 		return 0, nil
 	}
 	uq := u.core.q.{{.StructName}}
@@ -1282,8 +1283,8 @@ func (u *_update) Do(ctx context.Context) (int64, error) {
 	if u.unscoped {
 		ur = ur.Unscoped()
 	}
-	if len(u.conditionOpts) > 0 {
-		conditions := make([]gen.Condition, 0, len(u.conditionOpts))
+	if _len := len(u.conditionOpts); _len > 0 {
+		conditions := make([]gen.Condition, 0, _len)
 		for _, opt := range u.conditionOpts {
 			conditions = append(conditions, opt(u.core))
 		}
@@ -1291,7 +1292,7 @@ func (u *_update) Do(ctx context.Context) (int64, error) {
 			ur = ur.Where(conditions...)
 		}
 	}
-	columns := make([]field.AssignExpr, 0, len(u.updateOpts))
+	columns := make([]field.AssignExpr, 0, _length)
 	for _, opt := range u.updateOpts {
 		columns = append(columns, opt(u.core))
 	}
@@ -1394,8 +1395,8 @@ func (s *_sum) Do(ctx context.Context) (decimal.Decimal, error) {
 	if s.unscoped {
 		sr = sr.Unscoped()
 	}
-	if len(s.conditionOpts) > 0 {
-		conditions := make([]gen.Condition, 0, len(s.conditionOpts))
+	if _len := len(s.conditionOpts); _len > 0 {
+		conditions := make([]gen.Condition, 0, _len)
 		for _, opt := range s.conditionOpts {
 			conditions = append(conditions, opt(s.core))
 		}
@@ -1492,7 +1493,8 @@ func (c *_shardingCount) Where(opts ...ConditionOption) *_shardingCount {
 
 // Do 执行获取分表数据总记录
 func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}}]int64, error) {
-	if len(c.sharding) == 0 {
+	_lenSharding := len(c.sharding)
+	if _lenSharding == 0 {
 		return 0, nil, nil
 	}
 	cq := c.core.q.{{.StructName}}
@@ -1503,8 +1505,8 @@ func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}
 		cq = c.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
-	if len(c.conditionOpts) > 0 {
-		conditions = make([]gen.Condition, 0, len(c.conditionOpts))
+	if _len := len(c.conditionOpts); _len > 0 {
+		conditions = make([]gen.Condition, 0, _len)
 		for _, opt := range c.conditionOpts {
 			conditions = append(conditions, opt(c.core))
 		}
@@ -1553,7 +1555,7 @@ func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}
 	select {
 	case {{.ChanSign}}endChan:
 		count := int64(0)
-		m := make(map[{{.ShardingKeyType}}]int64, len(c.sharding))
+		m := make(map[{{.ShardingKeyType}}]int64, _lenSharding)
 		sm.Range(func(key, value interface{}) bool {
 			v := value.(int64)
 			m[key.({{.ShardingKeyType}})] = v
@@ -1764,7 +1766,8 @@ func (d *_shardingDelete) Where(opts ...ConditionOption) *_shardingDelete {
 
 // Do 执行删除分表数据
 func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}}]int64, error) {
-	if len(d.sharding) == 0 {
+	_lenSharding := len(d.sharding)
+	if _lenSharding == 0 {
 		return 0, nil, nil
 	}
 	dq := d.core.q.{{.StructName}}
@@ -1775,8 +1778,8 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 		dq = d.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
-	if len(d.conditionOpts) > 0 {
-		conditions = make([]gen.Condition, 0, len(d.conditionOpts))
+	if _len := len(d.conditionOpts); _len > 0 {
+		conditions = make([]gen.Condition, 0, _len)
 		for _, opt := range d.conditionOpts {
 			conditions = append(conditions, opt(d.core))
 		}
@@ -1825,7 +1828,7 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 	select {
 	case {{.ChanSign}}endChan:
 		rowsAffected := int64(0)
-		m := make(map[{{.ShardingKeyType}}]int64, len(d.sharding))
+		m := make(map[{{.ShardingKeyType}}]int64, _lenSharding)
 		sm.Range(func(key, value interface{}) bool {
 			v := value.(int64)
 			m[key.({{.ShardingKeyType}})] = v
@@ -1976,15 +1979,15 @@ func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}
 		fq = f.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
-	if len(f.conditionOpts) > 0 {
-		conditions = make([]gen.Condition, 0, len(f.conditionOpts))
+	if _len := len(f.conditionOpts); _len > 0 {
+		conditions = make([]gen.Condition, 0, _len)
 		for _, opt := range f.conditionOpts {
 			conditions = append(conditions, opt(f.core))
 		}
 	}
 	var fieldExpr []field.Expr
-	if len(f.selects) > 0 {
-		fieldExpr = make([]field.Expr, 0, len(f.selects))
+	if _len := len(f.selects); _len > 0 {
+		fieldExpr = make([]field.Expr, 0, _len)
 		if f.core.newTableName == nil {
 			fieldExpr = append(fieldExpr, f.selects...)
 		} else {
@@ -2190,15 +2193,15 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 		fq = l.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
-	if len(l.conditionOpts) > 0 {
-		conditions = make([]gen.Condition, 0, len(l.conditionOpts))
+	if _len := len(l.conditionOpts); _len > 0 {
+		conditions = make([]gen.Condition, 0, _len)
 		for _, opt := range l.conditionOpts {
 			conditions = append(conditions, opt(l.core))
 		}
 	}
 	var fieldExpr []field.Expr
-	if len(l.selects) > 0 {
-		fieldExpr = make([]field.Expr, 0, len(l.selects))
+	if _len := len(l.selects); _len > 0 {
+		fieldExpr = make([]field.Expr, 0, _len)
 		if l.core.newTableName == nil {
 			fieldExpr = append(fieldExpr, l.selects...)
 		} else {
@@ -2432,7 +2435,8 @@ func (l *_shardingList) Page(page, pageSize uint) *_shardingList {
 // Do 执行获取分表数据列表
 func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, int64, error) {
 	empty := make([]*{{.ModelName}}.{{.StructName}}, 0)
-	if len(l.sharding) == 0 {
+	_lenSharding := len(l.sharding)
+	if _lenSharding == 0 {
 		return empty, 0, nil
 	}
 	// 获取分表数据总记录
@@ -2452,7 +2456,7 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 		return empty, 0, nil
 	}
 	// 获取分表分页数据
-	svs := make([]*list.St, 0, len(l.sharding))
+	svs := make([]*list.St, 0, _lenSharding)
 	for k, v := range m {
 		svs = append(svs, &list.St{
 			ShardingValue: {{.ToShardingValue}},
@@ -2482,15 +2486,15 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 		lq = l.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
-	if len(l.conditionOpts) > 0 {
-		conditions = make([]gen.Condition, 0, len(l.conditionOpts))
+	if _len := len(l.conditionOpts); _len > 0 {
+		conditions = make([]gen.Condition, 0, _len)
 		for _, opt := range l.conditionOpts {
 			conditions = append(conditions, opt(l.core))
 		}
 	}
 	var fieldExpr []field.Expr
-	if len(l.selects) > 0 {
-		fieldExpr = make([]field.Expr, 0, len(l.selects))
+	if _len := len(l.selects); _len > 0 {
+		fieldExpr = make([]field.Expr, 0, _len)
 		if l.core.newTableName == nil {
 			fieldExpr = append(fieldExpr, l.selects...)
 		} else {
@@ -2500,8 +2504,8 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 		}
 	}
 	var orders []field.Expr
-	if len(l.orderOpts) > 0 {
-		orders = make([]field.Expr, 0, len(l.orderOpts))
+	if _len := len(l.orderOpts); _len > 0 {
+		orders = make([]field.Expr, 0, _len)
 		for _, opt := range l.orderOpts {
 			orders = append(orders, opt(l.core))
 		}
@@ -2694,7 +2698,8 @@ func (s *_shardingSum) Where(opts ...ConditionOption) *_shardingSum {
 
 // Do 执行分表SUM数据
 func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.ShardingKeyType}}]decimal.Decimal, error) {
-	if len(s.sharding) == 0 {
+	_lenSharding := len(s.sharding)
+	if _lenSharding == 0 {
 		return decimal.Zero, nil, nil
 	}
 	sq := s.core.q.{{.StructName}}
@@ -2705,8 +2710,8 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 		sq = s.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
-	if len(s.conditionOpts) > 0 {
-		conditions = make([]gen.Condition, 0, len(s.conditionOpts))
+	if _len := len(s.conditionOpts); _len > 0 {
+		conditions = make([]gen.Condition, 0, _len)
 		for _, opt := range s.conditionOpts {
 			conditions = append(conditions, opt(s.core))
 		}
@@ -2756,7 +2761,7 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 	select {
 	case {{.ChanSign}}endChan:
 		sum := decimal.Zero
-		m := make(map[{{.ShardingKeyType}}]decimal.Decimal, len(s.sharding))
+		m := make(map[{{.ShardingKeyType}}]decimal.Decimal, _lenSharding)
 		sm.Range(func(key, value interface{}) bool {
 			v := value.(decimal.Decimal)
 			m[key.({{.ShardingKeyType}})] = v
@@ -2914,15 +2919,15 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 		fq = t.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
-	if len(t.conditionOpts) > 0 {
-		conditions = make([]gen.Condition, 0, len(t.conditionOpts))
+	if _len := len(t.conditionOpts); _len > 0 {
+		conditions = make([]gen.Condition, 0, _len)
 		for _, opt := range t.conditionOpts {
 			conditions = append(conditions, opt(t.core))
 		}
 	}
 	var fieldExpr []field.Expr
-	if len(t.selects) > 0 {
-		fieldExpr = make([]field.Expr, 0, len(t.selects))
+	if _len := len(t.selects); _len > 0 {
+		fieldExpr = make([]field.Expr, 0, _len)
 		if t.core.newTableName == nil {
 			fieldExpr = append(fieldExpr, t.selects...)
 		} else {
@@ -2932,8 +2937,8 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 		}
 	}
 	var orders []field.Expr
-	if len(t.orderOpts) > 0 {
-		orders = make([]field.Expr, 0, len(t.orderOpts))
+	if _len := len(t.orderOpts); _len > 0 {
+		orders = make([]field.Expr, 0, _len)
 		for _, opt := range t.orderOpts {
 			orders = append(orders, opt(t.core))
 		}
@@ -3092,7 +3097,9 @@ func (u *_shardingUpdate) Where(opts ...ConditionOption) *_shardingUpdate {
 
 // Do 执行更新分表数据
 func (u *_shardingUpdate) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}}]int64, error) {
-	if len(u.updateOpts) == 0 || len(u.sharding) == 0 {
+	_lenSharding := len(u.sharding)
+	_lenUpdate := len(u.updateOpts)
+	if _lenUpdate == 0 || _lenSharding == 0 {
 		return 0, nil, nil
 	}
 	uq := u.core.q.{{.StructName}}
@@ -3103,13 +3110,13 @@ func (u *_shardingUpdate) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 		uq = u.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
-	if len(u.conditionOpts) > 0 {
-		conditions = make([]gen.Condition, 0, len(u.conditionOpts))
+	if _len := len(u.conditionOpts); _len > 0 {
+		conditions = make([]gen.Condition, 0, _len)
 		for _, opt := range u.conditionOpts {
 			conditions = append(conditions, opt(u.core))
 		}
 	}
-	columns := make([]field.AssignExpr, 0, len(u.updateOpts))
+	columns := make([]field.AssignExpr, 0, _lenUpdate)
 	for _, opt := range u.updateOpts {
 		columns = append(columns, opt(u.core))
 	}
@@ -3160,7 +3167,7 @@ func (u *_shardingUpdate) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 	select {
 	case {{.ChanSign}}endChan:
 		rowsAffected := int64(0)
-		m := make(map[{{.ShardingKeyType}}]int64, len(u.sharding))
+		m := make(map[{{.ShardingKeyType}}]int64, _lenSharding)
 		sm.Range(func(key, value interface{}) bool {
 			v := value.(int64)
 			m[key.({{.ShardingKeyType}})] = v
