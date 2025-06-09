@@ -177,6 +177,7 @@ type _count struct {
 	qTx           *query.QueryTx
 	unscoped      bool
 	conditionOpts []ConditionOption
+	writeDB       bool
 }
 
 // Count 获取数据总记录
@@ -216,6 +217,11 @@ func (c *_count) Where(opts ...ConditionOption) *_count {
 	return c
 }
 
+func (c *_count) WriteDB() *_count {
+	c.writeDB = true
+	return c
+}
+
 // Do 执行获取数据总记录
 func (c *_count) Do(ctx context.Context) (int64, error) {
 	cq := c.core.q.{{.StructName}}
@@ -228,6 +234,9 @@ func (c *_count) Do(ctx context.Context) (int64, error) {
 	cr := cq.WithContext(ctx)
 	if c.core.newTableName != nil && *c.core.newTableName != "" {
 		cr = cq.Table(*c.core.newTableName).WithContext(ctx)
+	}
+	if c.writeDB {
+		cr = cr.WriteDB()
 	}
 	if c.unscoped {
 		cr = cr.Unscoped()
@@ -494,6 +503,7 @@ type _first struct {
 	selects       []field.Expr
 	relationOpts  []RelationOption
 	conditionOpts []ConditionOption
+	writeDB       bool
 }
 
 // First 获取第一条记录（主键升序）
@@ -575,6 +585,11 @@ func (f *_first) Where(opts ...ConditionOption) *_first {
 	return f
 }
 
+func (f *_first) WriteDB() *_first {
+	f.writeDB = true
+	return f
+}
+
 // Do 执行获取第一条记录（主键升序）
 func (f *_first) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
 	fq := f.core.q.{{.StructName}}
@@ -598,6 +613,9 @@ func (f *_first) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error
 			}
 			fr = fr.Select(fs...)
 		}
+	}
+	if f.writeDB {
+		fr = fr.WriteDB()
 	}
 	if f.unscoped {
 		fr = fr.Unscoped()
@@ -667,6 +685,7 @@ type _last struct {
 	selects       []field.Expr
 	relationOpts  []RelationOption
 	conditionOpts []ConditionOption
+	writeDB       bool
 }
 
 // Last 获取最后一条记录（主键降序）
@@ -748,6 +767,11 @@ func (l *_last) Where(opts ...ConditionOption) *_last {
 	return l
 }
 
+func (l *_last) WriteDB() *_last {
+	l.writeDB = true
+	return l
+}
+
 // Do 执行获取最后一条记录（主键降序）
 func (l *_last) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
 	lq := l.core.q.{{.StructName}}
@@ -771,6 +795,9 @@ func (l *_last) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 			}
 			lr = lr.Select(fs...)
 		}
+	}
+	if l.writeDB {
+		lr = lr.WriteDB()
 	}
 	if l.unscoped {
 		lr = lr.Unscoped()
@@ -844,6 +871,7 @@ type _list struct {
 	relationOpts  []RelationOption
 	orderOpts     []OrderOption
 	conditionOpts []ConditionOption
+	writeDB       bool
 }
 
 // List 获取数据列表
@@ -931,6 +959,11 @@ func (l *_list) Where(opts ...ConditionOption) *_list {
 	return l
 }
 
+func (l *_list) WriteDB() *_list {
+	l.writeDB = true
+	return l
+}
+
 // Page 列表分页
 func (l *_list) Page(page, pageSize uint) *_list {
 	l.page = int(page)
@@ -961,6 +994,9 @@ func (l *_list) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, erro
 			}
 			lr = lr.Select(fs...)
 		}
+	}
+	if l.writeDB {
+		lr = lr.WriteDB()
 	}
 	if l.unscoped {
 		lr = lr.Unscoped()
@@ -1043,6 +1079,7 @@ type _take struct {
 	relationOpts  []RelationOption
 	orderOpts     []OrderOption
 	conditionOpts []ConditionOption
+	writeDB       bool
 }
 
 // Take 获取一条记录
@@ -1130,6 +1167,11 @@ func (t *_take) Where(opts ...ConditionOption) *_take {
 	return t
 }
 
+func (t *_take) WriteDB() *_take {
+	t.writeDB = true
+	return t
+}
+
 // Do 执行获取一条记录
 func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
 	tq := t.core.q.{{.StructName}}
@@ -1153,6 +1195,9 @@ func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 			}
 			tr = tr.Select(fs...)
 		}
+	}
+	if t.writeDB {
+		tr = tr.WriteDB()
 	}
 	if t.unscoped {
 		tr = tr.Unscoped()
@@ -1347,6 +1392,7 @@ type _sum struct {
 	unscoped      bool
 	genField      field.Expr
 	conditionOpts []ConditionOption
+	writeDB       bool
 }
 
 // Sum SUM数据
@@ -1382,6 +1428,11 @@ func (s *_sum) Unscoped() *_sum {
 	return s
 }
 
+func (s *_sum) WriteDB() *_sum {
+	s.writeDB = true
+	return s
+}
+
 func (s *_sum) Where(opts ...ConditionOption) *_sum {
 	s.conditionOpts = append(s.conditionOpts, opts...)
 	return s
@@ -1401,6 +1452,9 @@ func (s *_sum) Do(ctx context.Context) (decimal.Decimal, error) {
 		sr = sq.Table(*s.core.newTableName).WithContext(ctx)
 	}
 	sr = sr.Select(expr)
+	if s.writeDB {
+		sr = sr.WriteDB()
+	}
 	if s.unscoped {
 		sr = sr.Unscoped()
 	}
@@ -1455,6 +1509,7 @@ type _shardingCount struct {
 	conditionOpts []ConditionOption
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
+	writeDB       bool
 }
 
 // ShardingCount 获取分表数据总记录
@@ -1500,6 +1555,11 @@ func (c *_shardingCount) Where(opts ...ConditionOption) *_shardingCount {
 	return c
 }
 
+func (c *_shardingCount) WriteDB() *_shardingCount {
+	c.writeDB = true
+	return c
+}
+
 // Do 执行获取分表数据总记录
 func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}}]int64, error) {
 	_lenSharding := len(c.sharding)
@@ -1542,6 +1602,9 @@ func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}
 			copy(_conditions, conditions)
 			_conditions = append(_conditions, Condition{{.ShardingKey}}(sharding)(c.core))
 			cr := cq.WithContext(ctx)
+			if c.writeDB {
+				cr = cr.WriteDB()
+			}
 			if c.unscoped {
 				cr = cr.Unscoped()
 			}
@@ -1890,6 +1953,7 @@ type _shardingFirst struct {
 	conditionOpts []ConditionOption
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
+	writeDB       bool
 }
 
 // ShardingFirst 获取分表中随机第一条记录（主键升序）
@@ -1975,6 +2039,11 @@ func (f *_shardingFirst) Where(opts ...ConditionOption) *_shardingFirst {
 	return f
 }
 
+func (f *_shardingFirst) WriteDB() *_shardingFirst {
+	f.writeDB = true
+	return f
+}
+
 // Do 执行获取分表中随机第一条记录（主键升序）
 func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
 	if len(f.sharding) == 0 {
@@ -2029,6 +2098,9 @@ func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}
 			fr := fq.WithContext(ctx)
 			if len(fieldExpr) > 0 {
 				fr = fr.Select(fieldExpr...)
+			}
+			if f.writeDB {
+				fr = fr.WriteDB()
 			}
 			if f.unscoped {
 				fr = fr.Unscoped()
@@ -2104,6 +2176,7 @@ type _shardingLast struct {
 	conditionOpts []ConditionOption
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
+	writeDB       bool
 }
 
 // ShardingLast 获取分表中随机最后一条记录（主键降序）
@@ -2189,17 +2262,22 @@ func (l *_shardingLast) Where(opts ...ConditionOption) *_shardingLast {
 	return l
 }
 
+func (l *_shardingLast) WriteDB() *_shardingLast {
+	l.writeDB = true
+	return l
+}
+
 // Do 执行获取分表中随机最后一条记录（主键降序）
 func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
 	if len(l.sharding) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
-	fq := l.core.q.{{.StructName}}
+	lq := l.core.q.{{.StructName}}
 	if l.tx != nil {
-		fq = l.tx.{{.StructName}}
+		lq = l.tx.{{.StructName}}
 	}
 	if l.qTx != nil {
-		fq = l.qTx.{{.StructName}}
+		lq = l.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
 	if _len := len(l.conditionOpts); _len > 0 {
@@ -2240,17 +2318,20 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 			_conditions := make([]gen.Condition, len(conditions))
 			copy(_conditions, conditions)
 			_conditions = append(_conditions, Condition{{.ShardingKey}}(sharding)(l.core))
-			fr := fq.WithContext(ctx)
+			lr := lq.WithContext(ctx)
 			if len(fieldExpr) > 0 {
-				fr = fr.Select(fieldExpr...)
+				lr = lr.Select(fieldExpr...)
+			}
+			if l.writeDB {
+				lr = lr.WriteDB()
 			}
 			if l.unscoped {
-				fr = fr.Unscoped()
+				lr = lr.Unscoped()
 			}
 			if (l.tx != nil || l.qTx != nil) && l.lock != nil {
-				fr = fr.Clauses(l.lock)
+				lr = lr.Clauses(l.lock)
 			}
-			res, err := fr.Where(_conditions...).Last()
+			res, err := lr.Where(_conditions...).Last()
 			if err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
 					l.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingLast.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
@@ -2323,6 +2404,7 @@ type _shardingList struct {
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
 	asc           bool
+	writeDB       bool
 }
 
 // ShardingList 获取分表数据列表
@@ -2438,6 +2520,11 @@ func (l *_shardingList) Where(opts ...ConditionOption) *_shardingList {
 func (l *_shardingList) Page(page, pageSize uint) *_shardingList {
 	l.page = int(page)
 	l.pageSize = int(pageSize)
+	return l
+}
+
+func (l *_shardingList) WriteDB() *_shardingList {
+	l.writeDB = true
 	return l
 }
 
@@ -2565,6 +2652,9 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 					if len(fieldExpr) > 0 {
 						lr = lr.Select(fieldExpr...)
 					}
+					if l.writeDB {
+						lr = lr.WriteDB()
+					}
 					if l.unscoped {
 						lr = lr.Unscoped()
 					}
@@ -2655,6 +2745,7 @@ type _shardingSum struct {
 	conditionOpts []ConditionOption
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
+	writeDB       bool
 }
 
 // ShardingSum 分表SUM数据
@@ -2705,6 +2796,11 @@ func (s *_shardingSum) Where(opts ...ConditionOption) *_shardingSum {
 	return s
 }
 
+func (s *_shardingSum) WriteDB() *_shardingSum {
+	s.writeDB = true
+	return s
+}
+
 // Do 执行分表SUM数据
 func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.ShardingKeyType}}]decimal.Decimal, error) {
 	_lenSharding := len(s.sharding)
@@ -2748,6 +2844,9 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 			copy(_conditions, conditions)
 			_conditions = append(_conditions, Condition{{.ShardingKey}}(sharding)(s.core))
 			sr := sq.WithContext(ctx).Select(expr)
+			if s.writeDB {
+				sr = sr.WriteDB()
+			}
 			if s.unscoped {
 				sr = sr.Unscoped()
 			}
@@ -2824,6 +2923,7 @@ type _shardingTake struct {
 	conditionOpts []ConditionOption
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
+	writeDB       bool
 }
 
 // ShardingTake 获取分表中随机一条记录
@@ -2915,6 +3015,11 @@ func (t *_shardingTake) Where(opts ...ConditionOption) *_shardingTake {
 	return t
 }
 
+func (t *_shardingTake) WriteDB() *_shardingTake {
+	t.writeDB = true
+	return t
+}
+
 // Do 执行获取分表中随机一条记录
 func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
 	if len(t.sharding) == 0 {
@@ -2976,6 +3081,9 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 			fr := fq.WithContext(ctx)
 			if len(fieldExpr) > 0 {
 				fr = fr.Select(fieldExpr...)
+			}
+			if t.writeDB {
+				fr = fr.WriteDB()
 			}
 			if t.unscoped {
 				fr = fr.Unscoped()
