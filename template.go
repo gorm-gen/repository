@@ -178,6 +178,7 @@ type _count struct {
 	unscoped      bool
 	conditionOpts []ConditionOption
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // Count 获取数据总记录
@@ -186,6 +187,7 @@ func ({{.Abbr}} *{{.StructName}}) Count() *_count {
 		core:          {{.Abbr}},
 		unscoped:      {{.Abbr}}.unscoped,
 		conditionOpts: make([]ConditionOption, 0),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -209,6 +211,11 @@ func (c *_count) QueryTx(tx *query.QueryTx) *_count {
 
 func (c *_count) Unscoped() *_count {
 	c.unscoped = true
+	return c
+}
+
+func (c *_count) Scopes(funcs ...func(gen.Dao) gen.Dao) *_count {
+	c.scopes = append(c.scopes, funcs...)
 	return c
 }
 
@@ -240,6 +247,9 @@ func (c *_count) Do(ctx context.Context) (int64, error) {
 	}
 	if c.unscoped {
 		cr = cr.Unscoped()
+	}
+	if len(c.scopes) > 0 {
+		cr = cr.Scopes(c.scopes...)
 	}
 	if _len := len(c.conditionOpts); _len > 0 {
 		conditions := make([]gen.Condition, 0, _len)
@@ -274,6 +284,7 @@ import (
 	"runtime/debug"
 
 	"go.uber.org/zap"
+	"gorm.io/gen"
 
 	"{{.GenQueryPkg}}"
 
@@ -289,6 +300,7 @@ type _create struct {
 	unscoped  bool
 	values    []*{{.ModelName}}.{{.StructName}}
 	batchSize int
+	scopes    []func(gen.Dao) gen.Dao
 }
 
 // Create 添加数据
@@ -297,6 +309,7 @@ func ({{.Abbr}} *{{.StructName}}) Create() *_create {
 		core:     {{.Abbr}},
 		unscoped: {{.Abbr}}.unscoped,
 		values:   make([]*{{.ModelName}}.{{.StructName}}, 0),
+		scopes:   make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -320,6 +333,11 @@ func (c *_create) QueryTx(tx *query.QueryTx) *_create {
 
 func (c *_create) Unscoped() *_create {
 	c.unscoped = true
+	return c
+}
+
+func (c *_create) Scopes(funcs ...func(gen.Dao) gen.Dao) *_create {
+	c.scopes = append(c.scopes, funcs...)
 	return c
 }
 
@@ -353,6 +371,9 @@ func (c *_create) Do(ctx context.Context) (err error) {
 	}
 	if c.unscoped {
 		cr = cr.Unscoped()
+	}
+	if len(c.scopes) > 0 {
+		cr = cr.Scopes(c.scopes...)
 	}
 	if length > 1 && c.batchSize > 0 {
 		err = cr.CreateInBatches(c.values, c.batchSize)
@@ -395,6 +416,7 @@ type _delete struct {
 	qTx           *query.QueryTx
 	unscoped      bool
 	conditionOpts []ConditionOption
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // Delete 删除数据
@@ -403,6 +425,7 @@ func ({{.Abbr}} *{{.StructName}}) Delete() *_delete {
 		core:          {{.Abbr}},
 		unscoped:      {{.Abbr}}.unscoped,
 		conditionOpts: make([]ConditionOption, 0),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -429,6 +452,11 @@ func (d *_delete) Unscoped() *_delete {
 	return d
 }
 
+func (d *_delete) Scopes(funcs ...func(gen.Dao) gen.Dao) *_delete {
+	d.scopes = append(d.scopes, funcs...)
+	return d
+}
+
 func (d *_delete) Where(opts ...ConditionOption) *_delete {
 	d.conditionOpts = append(d.conditionOpts, opts...)
 	return d
@@ -449,6 +477,9 @@ func (d *_delete) Do(ctx context.Context) (int64, error) {
 	}
 	if d.unscoped {
 		dr = dr.Unscoped()
+	}
+	if len(d.scopes) > 0 {
+		dr = dr.Scopes(d.scopes...)
 	}
 	if _len := len(d.conditionOpts); _len > 0 {
 		conditions := make([]gen.Condition, 0, _len)
@@ -504,6 +535,7 @@ type _first struct {
 	relationOpts  []RelationOption
 	conditionOpts []ConditionOption
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // First 获取第一条记录（主键升序）
@@ -514,6 +546,7 @@ func ({{.Abbr}} *{{.StructName}}) First() *_first {
 		selects:       make([]field.Expr, 0),
 		relationOpts:  make([]RelationOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -575,6 +608,11 @@ func (f *_first) Unscoped() *_first {
 	return f
 }
 
+func (f *_first) Scopes(funcs ...func(gen.Dao) gen.Dao) *_first {
+	f.scopes = append(f.scopes, funcs...)
+	return f
+}
+
 func (f *_first) Relation(opts ...RelationOption) *_first {
 	f.relationOpts = append(f.relationOpts, opts...)
 	return f
@@ -619,6 +657,9 @@ func (f *_first) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error
 	}
 	if f.unscoped {
 		fr = fr.Unscoped()
+	}
+	if len(f.scopes) > 0 {
+		fr = fr.Scopes(f.scopes...)
 	}
 	if (f.tx != nil || f.qTx != nil) && f.lock != nil {
 		fr = fr.Clauses(f.lock)
@@ -686,6 +727,7 @@ type _last struct {
 	relationOpts  []RelationOption
 	conditionOpts []ConditionOption
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // Last 获取最后一条记录（主键降序）
@@ -696,6 +738,7 @@ func ({{.Abbr}} *{{.StructName}}) Last() *_last {
 		selects:       make([]field.Expr, 0),
 		relationOpts:  make([]RelationOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -757,6 +800,11 @@ func (l *_last) Unscoped() *_last {
 	return l
 }
 
+func (l *_last) Scopes(funcs ...func(gen.Dao) gen.Dao) *_last {
+	l.scopes = append(l.scopes, funcs...)
+	return l
+}
+
 func (l *_last) Relation(opts ...RelationOption) *_last {
 	l.relationOpts = append(l.relationOpts, opts...)
 	return l
@@ -801,6 +849,9 @@ func (l *_last) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 	}
 	if l.unscoped {
 		lr = lr.Unscoped()
+	}
+	if len(l.scopes) > 0 {
+		lr = lr.Scopes(l.scopes...)
 	}
 	if (l.tx != nil || l.qTx != nil) && l.lock != nil {
 		lr = lr.Clauses(l.lock)
@@ -872,6 +923,7 @@ type _list struct {
 	orderOpts     []OrderOption
 	conditionOpts []ConditionOption
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // List 获取数据列表
@@ -883,6 +935,7 @@ func ({{.Abbr}} *{{.StructName}}) List() *_list {
 		relationOpts:  make([]RelationOption, 0),
 		orderOpts:     make([]OrderOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -944,6 +997,11 @@ func (l *_list) Unscoped() *_list {
 	return l
 }
 
+func (l *_list) Scopes(funcs ...func(gen.Dao) gen.Dao) *_list {
+	l.scopes = append(l.scopes, funcs...)
+	return l
+}
+
 func (l *_list) Relation(opts ...RelationOption) *_list {
 	l.relationOpts = append(l.relationOpts, opts...)
 	return l
@@ -1000,6 +1058,9 @@ func (l *_list) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, erro
 	}
 	if l.unscoped {
 		lr = lr.Unscoped()
+	}
+	if len(l.scopes) > 0 {
+		lr = lr.Scopes(l.scopes...)
 	}
 	if (l.tx != nil || l.qTx != nil) && l.lock != nil {
 		lr = lr.Clauses(l.lock)
@@ -1080,6 +1141,7 @@ type _take struct {
 	orderOpts     []OrderOption
 	conditionOpts []ConditionOption
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // Take 获取一条记录
@@ -1091,6 +1153,7 @@ func ({{.Abbr}} *{{.StructName}}) Take() *_take {
 		relationOpts:  make([]RelationOption, 0),
 		orderOpts:     make([]OrderOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -1152,6 +1215,11 @@ func (t *_take) Unscoped() *_take {
 	return t
 }
 
+func (t *_take) Scopes(funcs ...func(gen.Dao) gen.Dao) *_take {
+	t.scopes = append(t.scopes, funcs...)
+	return t
+}
+
 func (t *_take) Relation(opts ...RelationOption) *_take {
 	t.relationOpts = append(t.relationOpts, opts...)
 	return t
@@ -1201,6 +1269,9 @@ func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error)
 	}
 	if t.unscoped {
 		tr = tr.Unscoped()
+	}
+	if len(t.scopes) > 0 {
+		tr = tr.Scopes(t.scopes...)
 	}
 	if (t.tx != nil || t.qTx != nil) && t.lock != nil {
 		tr = tr.Clauses(t.lock)
@@ -1271,6 +1342,7 @@ type _update struct {
 	unscoped      bool
 	updateOpts    []UpdateOption
 	conditionOpts []ConditionOption
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // Update 更新数据
@@ -1280,6 +1352,7 @@ func ({{.Abbr}} *{{.StructName}}) Update() *_update {
 		unscoped:      {{.Abbr}}.unscoped,
 		updateOpts:    make([]UpdateOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -1303,6 +1376,11 @@ func (u *_update) QueryTx(tx *query.QueryTx) *_update {
 
 func (u *_update) Unscoped() *_update {
 	u.unscoped = true
+	return u
+}
+
+func (u *_update) Scopes(funcs ...func(gen.Dao) gen.Dao) *_update {
+	u.scopes = append(u.scopes, funcs...)
 	return u
 }
 
@@ -1335,6 +1413,9 @@ func (u *_update) Do(ctx context.Context) (int64, error) {
 	}
 	if u.unscoped {
 		ur = ur.Unscoped()
+	}
+	if len(u.scopes) > 0 {
+		ur = ur.Scopes(u.scopes...)
 	}
 	if _len := len(u.conditionOpts); _len > 0 {
 		conditions := make([]gen.Condition, 0, _len)
@@ -1393,6 +1474,7 @@ type _sum struct {
 	genField      field.Expr
 	conditionOpts []ConditionOption
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // Sum SUM数据
@@ -1402,6 +1484,7 @@ func ({{.Abbr}} *{{.StructName}}) Sum(genField field.Expr) *_sum {
 		unscoped:      {{.Abbr}}.unscoped,
 		genField:      genField,
 		conditionOpts: make([]ConditionOption, 0),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -1425,6 +1508,11 @@ func (s *_sum) QueryTx(tx *query.QueryTx) *_sum {
 
 func (s *_sum) Unscoped() *_sum {
 	s.unscoped = true
+	return s
+}
+
+func (s *_sum) Scopes(funcs ...func(gen.Dao) gen.Dao) *_sum {
+	s.scopes = append(s.scopes, funcs...)
 	return s
 }
 
@@ -1457,6 +1545,9 @@ func (s *_sum) Do(ctx context.Context) (decimal.Decimal, error) {
 	}
 	if s.unscoped {
 		sr = sr.Unscoped()
+	}
+	if len(s.scopes) > 0 {
+		sr = sr.Scopes(s.scopes...)
 	}
 	if _len := len(s.conditionOpts); _len > 0 {
 		conditions := make([]gen.Condition, 0, _len)
@@ -1510,6 +1601,7 @@ type _shardingCount struct {
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // ShardingCount 获取分表数据总记录
@@ -1520,6 +1612,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingCount(sharding []{{.ShardingKeyType}})
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
 		worker:        make(chan struct{}, runtime.NumCPU()),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -1547,6 +1640,11 @@ func (c *_shardingCount) QueryTx(tx *query.QueryTx) *_shardingCount {
 
 func (c *_shardingCount) Unscoped() *_shardingCount {
 	c.unscoped = true
+	return c
+}
+
+func (c *_shardingCount) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingCount {
+	c.scopes = append(c.scopes, funcs...)
 	return c
 }
 
@@ -1608,6 +1706,9 @@ func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}
 			if c.unscoped {
 				cr = cr.Unscoped()
 			}
+			if len(c.scopes) > 0 {
+				cr = cr.Scopes(c.scopes...)
+			}
 			count, err := cr.Where(_conditions...).Count()
 			if err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
@@ -1655,6 +1756,7 @@ import (
 	"runtime/debug"
 
 	"go.uber.org/zap"
+	"gorm.io/gen"
 
 	"{{.GenQueryPkg}}"
 
@@ -1668,6 +1770,7 @@ type _shardingCreate struct {
 	unscoped  bool
 	values    []*{{.ModelName}}.{{.StructName}}
 	batchSize int
+	scopes    []func(gen.Dao) gen.Dao
 }
 
 // ShardingCreate 分表添加数据
@@ -1676,6 +1779,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingCreate() *_shardingCreate {
 		core:     {{.Abbr}},
 		unscoped: {{.Abbr}}.unscoped,
 		values:   make([]*{{.ModelName}}.{{.StructName}}, 0),
+		scopes:   make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -1702,6 +1806,11 @@ func (c *_shardingCreate) Unscoped() *_shardingCreate {
 	return c
 }
 
+func (c *_shardingCreate) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingCreate {
+	c.scopes = append(c.scopes, funcs...)
+	return c
+}
+
 func (c *_shardingCreate) Values(values ...*{{.ModelName}}.{{.StructName}}) *_shardingCreate {
 	c.values = append(c.values, values...)
 	return c
@@ -1721,18 +1830,30 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 	}
 	bs := uint(c.batchSize)
 	if length == 1 {
-		return c.core.Create().Tx(c.tx).QueryTx(c.qTx).BatchSize(bs).Values(c.values...).Do(ctx)
+		cr := c.core.Create().Tx(c.tx).QueryTx(c.qTx).BatchSize(bs).Values(c.values...).Scopes(c.scopes...)
+		if c.unscoped {
+			cr = cr.Unscoped()
+		}
+		return cr.Do(ctx)
 	}
 	m := make(map[{{.ShardingKeyType}}][]*{{.ModelName}}.{{.StructName}}, length)
 	for _, value := range c.values {
 		m[value.{{.ShardingKey}}] = append(m[value.{{.ShardingKey}}], value)
 	}
 	if len(m) == 1 {
-		return c.core.Create().Tx(c.tx).QueryTx(c.qTx).BatchSize(bs).Values(c.values...).Do(ctx)
+		cr := c.core.Create().Tx(c.tx).QueryTx(c.qTx).BatchSize(bs).Values(c.values...).Scopes(c.scopes...)
+		if c.unscoped {
+			cr = cr.Unscoped()
+		}
+		return cr.Do(ctx)
 	}
 	if c.tx != nil || c.qTx != nil {
 		for _, values := range m {
-			if err = c.core.Create().Tx(c.tx).QueryTx(c.qTx).BatchSize(bs).Values(values...).Do(ctx); err != nil {
+			cr := c.core.Create().Tx(c.tx).QueryTx(c.qTx).BatchSize(bs).Values(values...).Scopes(c.scopes...)
+			if c.unscoped {
+				cr = cr.Unscoped()
+			}
+			if err = cr.Do(ctx); err != nil {
 				return
 			}
 		}
@@ -1747,7 +1868,11 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 			}
 		}()
 		for _, values := range m {
-			if err = c.core.Create().Tx(tx).BatchSize(bs).Values(values...).Do(ctx); err != nil {
+			cr := c.core.Create().Tx(tx).BatchSize(bs).Values(values...).Scopes(c.scopes...)
+			if c.unscoped {
+				cr = cr.Unscoped()
+			}
+			if err = cr.Do(ctx); err != nil {
 				return
 			}
 		}
@@ -1787,6 +1912,7 @@ type _shardingDelete struct {
 	conditionOpts []ConditionOption
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // ShardingDelete 删除分表数据
@@ -1797,6 +1923,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingDelete(sharding []{{.ShardingKeyType}}
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
 		worker:        make(chan struct{}, runtime.NumCPU()),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -1828,6 +1955,11 @@ func (d *_shardingDelete) QueryTx(tx *query.QueryTx) *_shardingDelete {
 
 func (d *_shardingDelete) Unscoped() *_shardingDelete {
 	d.unscoped = true
+	return d
+}
+
+func (d *_shardingDelete) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingDelete {
+	d.scopes = append(d.scopes, funcs...)
 	return d
 }
 
@@ -1880,6 +2012,9 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 			dr := dq.WithContext(ctx)
 			if d.unscoped {
 				dr = dr.Unscoped()
+			}
+			if len(d.scopes) > 0 {
+				dr = dr.Scopes(d.scopes...)
 			}
 			res, err := dr.Where(_conditions...).Delete()
 			if err != nil {
@@ -1954,6 +2089,7 @@ type _shardingFirst struct {
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // ShardingFirst 获取分表中随机第一条记录（主键升序）
@@ -1965,6 +2101,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingFirst(sharding []{{.ShardingKeyType}})
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
 		worker:        make(chan struct{}, runtime.NumCPU()),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -2031,6 +2168,11 @@ func (f *_shardingFirst) ForShareNoWait() *_shardingFirst {
 
 func (f *_shardingFirst) Unscoped() *_shardingFirst {
 	f.unscoped = true
+	return f
+}
+
+func (f *_shardingFirst) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingFirst {
+	f.scopes = append(f.scopes, funcs...)
 	return f
 }
 
@@ -2105,6 +2247,9 @@ func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}
 			if f.unscoped {
 				fr = fr.Unscoped()
 			}
+			if len(f.scopes) > 0 {
+				fr = fr.Scopes(f.scopes...)
+			}
 			if (f.tx != nil || f.qTx != nil) && f.lock != nil {
 				fr = fr.Clauses(f.lock)
 			}
@@ -2177,6 +2322,7 @@ type _shardingLast struct {
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // ShardingLast 获取分表中随机最后一条记录（主键降序）
@@ -2188,6 +2334,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingLast(sharding []{{.ShardingKeyType}}) 
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
 		worker:        make(chan struct{}, runtime.NumCPU()),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -2254,6 +2401,11 @@ func (l *_shardingLast) ForShareNoWait() *_shardingLast {
 
 func (l *_shardingLast) Unscoped() *_shardingLast {
 	l.unscoped = true
+	return l
+}
+
+func (l *_shardingLast) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingLast {
+	l.scopes = append(l.scopes, funcs...)
 	return l
 }
 
@@ -2327,6 +2479,9 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 			}
 			if l.unscoped {
 				lr = lr.Unscoped()
+			}
+			if len(l.scopes) > 0 {
+				lr = lr.Scopes(l.scopes...)
 			}
 			if (l.tx != nil || l.qTx != nil) && l.lock != nil {
 				lr = lr.Clauses(l.lock)
@@ -2405,6 +2560,7 @@ type _shardingList struct {
 	worker        chan struct{}
 	asc           bool
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // ShardingList 获取分表数据列表
@@ -2417,6 +2573,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingList(sharding []{{.ShardingKeyType}}) 
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
 		worker:        make(chan struct{}, runtime.NumCPU()),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -2503,6 +2660,11 @@ func (l *_shardingList) ForShareNoWait() *_shardingList {
 
 func (l *_shardingList) Unscoped() *_shardingList {
 	l.unscoped = true
+	return l
+}
+
+func (l *_shardingList) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingList {
+	l.scopes = append(l.scopes, funcs...)
 	return l
 }
 
@@ -2658,6 +2820,9 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 					if l.unscoped {
 						lr = lr.Unscoped()
 					}
+					if len(l.scopes) > 0 {
+						lr = lr.Scopes(l.scopes...)
+					}
 					if (l.tx != nil || l.qTx != nil) && l.lock != nil {
 						lr = lr.Clauses(l.lock)
 					}
@@ -2746,6 +2911,7 @@ type _shardingSum struct {
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // ShardingSum 分表SUM数据
@@ -2757,6 +2923,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingSum(genField field.Expr, sharding []{{
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
 		worker:        make(chan struct{}, runtime.NumCPU()),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -2788,6 +2955,11 @@ func (s *_shardingSum) QueryTx(tx *query.QueryTx) *_shardingSum {
 
 func (s *_shardingSum) Unscoped() *_shardingSum {
 	s.unscoped = true
+	return s
+}
+
+func (s *_shardingSum) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingSum {
+	s.scopes = append(s.scopes, funcs...)
 	return s
 }
 
@@ -2849,6 +3021,9 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 			}
 			if s.unscoped {
 				sr = sr.Unscoped()
+			}
+			if len(s.scopes) > 0 {
+				sr = sr.Scopes(s.scopes...)
 			}
 			var data Sum
 			if err := sr.Where(_conditions...).Scan(&data); err != nil {
@@ -2924,6 +3099,7 @@ type _shardingTake struct {
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
 	writeDB       bool
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // ShardingTake 获取分表中随机一条记录
@@ -2936,6 +3112,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingTake(sharding []{{.ShardingKeyType}}) 
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
 		worker:        make(chan struct{}, runtime.NumCPU()),
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
@@ -3005,6 +3182,11 @@ func (t *_shardingTake) Unscoped() *_shardingTake {
 	return t
 }
 
+func (t *_shardingTake) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingTake {
+	t.scopes = append(t.scopes, funcs...)
+	return t
+}
+
 func (t *_shardingTake) Order(opts ...OrderOption) *_shardingTake {
 	t.orderOpts = append(t.orderOpts, opts...)
 	return t
@@ -3025,12 +3207,12 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 	if len(t.sharding) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
-	fq := t.core.q.{{.StructName}}
+	tq := t.core.q.{{.StructName}}
 	if t.tx != nil {
-		fq = t.tx.{{.StructName}}
+		tq = t.tx.{{.StructName}}
 	}
 	if t.qTx != nil {
-		fq = t.qTx.{{.StructName}}
+		tq = t.qTx.{{.StructName}}
 	}
 	var conditions []gen.Condition
 	if _len := len(t.conditionOpts); _len > 0 {
@@ -3078,24 +3260,27 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 			_conditions := make([]gen.Condition, len(conditions))
 			copy(_conditions, conditions)
 			_conditions = append(_conditions, Condition{{.ShardingKey}}(sharding)(t.core))
-			fr := fq.WithContext(ctx)
+			tr := tq.WithContext(ctx)
 			if len(fieldExpr) > 0 {
-				fr = fr.Select(fieldExpr...)
+				tr = tr.Select(fieldExpr...)
 			}
 			if t.writeDB {
-				fr = fr.WriteDB()
+				tr = tr.WriteDB()
 			}
 			if t.unscoped {
-				fr = fr.Unscoped()
+				tr = tr.Unscoped()
+			}
+			if len(t.scopes) > 0 {
+				tr = tr.Scopes(t.scopes...)
 			}
 			if (t.tx != nil || t.qTx != nil) && t.lock != nil {
-				fr = fr.Clauses(t.lock)
+				tr = tr.Clauses(t.lock)
 			}
-			fr = fr.Where(_conditions...)
+			tr = tr.Where(_conditions...)
 			if len(orders) > 0 {
-				fr = fr.Order(orders...)
+				tr = tr.Order(orders...)
 			}
-			res, err := fr.Take()
+			res, err := tr.Take()
 			if err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
 					t.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingTake.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
@@ -3157,6 +3342,7 @@ type _shardingUpdate struct {
 	conditionOpts []ConditionOption
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
+	scopes        []func(gen.Dao) gen.Dao
 }
 
 // ShardingUpdate 更新分表数据
@@ -3164,6 +3350,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingUpdate(sharding []{{.ShardingKeyType}}
 	return &_shardingUpdate{
 		core:          {{.Abbr}},
 		unscoped:      {{.Abbr}}.unscoped,
+		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 		updateOpts:    make([]UpdateOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
@@ -3199,6 +3386,11 @@ func (u *_shardingUpdate) QueryTx(tx *query.QueryTx) *_shardingUpdate {
 
 func (u *_shardingUpdate) Unscoped() *_shardingUpdate {
 	u.unscoped = true
+	return u
+}
+
+func (u *_shardingUpdate) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingUpdate {
+	u.scopes = append(u.scopes, funcs...)
 	return u
 }
 
@@ -3264,6 +3456,9 @@ func (u *_shardingUpdate) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 			ur := uq.WithContext(ctx)
 			if u.unscoped {
 				ur = ur.Unscoped()
+			}
+			if len(u.scopes) > 0 {
+				ur = ur.Scopes(u.scopes...)
 			}
 			res, err := ur.Where(_conditions...).UpdateSimple(columns...)
 			if err != nil {
