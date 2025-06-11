@@ -154,6 +154,11 @@ func (r *Repository) generate(model interface{}, shardingStructName string) erro
 		return err
 	}
 
+	// scan.go
+	if err := r.genScan(rt, _base); err != nil {
+		return err
+	}
+
 	// sum.go
 	if err := r.genSum(rt, _base); err != nil {
 		return err
