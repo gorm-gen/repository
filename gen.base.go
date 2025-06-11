@@ -83,11 +83,11 @@ func (r *Repository) genBase(rt reflect.Type, _data *base) error {
 	}
 
 	if pfPkg {
-		imports = append(imports, `	f "github.com/gorm-gen/plugin/field"
+		imports = append(imports, `	f "github.com/gorm-gen/field"
 `)
 	}
 	if pfvPkg {
-		imports = append(imports, `	"github.com/gorm-gen/plugin/field/value"
+		imports = append(imports, `	"github.com/gorm-gen/field/value"
 `)
 	}
 	if decimalPkg {
