@@ -209,8 +209,12 @@ func (c *_count) QueryTx(tx *query.QueryTx) *_count {
 	return c
 }
 
-func (c *_count) Unscoped() *_count {
-	c.unscoped = true
+func (c *_count) Unscoped(unscoped ...bool) *_count {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	c.unscoped = _unscoped
 	return c
 }
 
@@ -331,8 +335,12 @@ func (c *_create) QueryTx(tx *query.QueryTx) *_create {
 	return c
 }
 
-func (c *_create) Unscoped() *_create {
-	c.unscoped = true
+func (c *_create) Unscoped(unscoped ...bool) *_create {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	c.unscoped = _unscoped
 	return c
 }
 
@@ -447,8 +455,12 @@ func (d *_delete) QueryTx(tx *query.QueryTx) *_delete {
 	return d
 }
 
-func (d *_delete) Unscoped() *_delete {
-	d.unscoped = true
+func (d *_delete) Unscoped(unscoped ...bool) *_delete {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	d.unscoped = _unscoped
 	return d
 }
 
@@ -603,8 +615,12 @@ func (f *_first) ForShareNoWait() *_first {
 	return f
 }
 
-func (f *_first) Unscoped() *_first {
-	f.unscoped = true
+func (f *_first) Unscoped(unscoped ...bool) *_first {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	f.unscoped = _unscoped
 	return f
 }
 
@@ -795,8 +811,12 @@ func (l *_last) ForShareNoWait() *_last {
 	return l
 }
 
-func (l *_last) Unscoped() *_last {
-	l.unscoped = true
+func (l *_last) Unscoped(unscoped ...bool) *_last {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	l.unscoped = _unscoped
 	return l
 }
 
@@ -992,8 +1012,12 @@ func (l *_list) ForShareNoWait() *_list {
 	return l
 }
 
-func (l *_list) Unscoped() *_list {
-	l.unscoped = true
+func (l *_list) Unscoped(unscoped ...bool) *_list {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	l.unscoped = _unscoped
 	return l
 }
 
@@ -1210,8 +1234,12 @@ func (t *_take) ForShareNoWait() *_take {
 	return t
 }
 
-func (t *_take) Unscoped() *_take {
-	t.unscoped = true
+func (t *_take) Unscoped(unscoped ...bool) *_take {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	t.unscoped = _unscoped
 	return t
 }
 
@@ -1374,8 +1402,12 @@ func (u *_update) QueryTx(tx *query.QueryTx) *_update {
 	return u
 }
 
-func (u *_update) Unscoped() *_update {
-	u.unscoped = true
+func (u *_update) Unscoped(unscoped ...bool) *_update {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	u.unscoped = _unscoped
 	return u
 }
 
@@ -1506,8 +1538,12 @@ func (s *_sum) QueryTx(tx *query.QueryTx) *_sum {
 	return s
 }
 
-func (s *_sum) Unscoped() *_sum {
-	s.unscoped = true
+func (s *_sum) Unscoped(unscoped ...bool) *_sum {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	s.unscoped = _unscoped
 	return s
 }
 
@@ -1669,8 +1705,12 @@ func (p *_pluck) ForShareNoWait() *_pluck {
 	return p
 }
 
-func (p *_pluck) Unscoped() *_pluck {
-	p.unscoped = true
+func (p *_pluck) Unscoped(unscoped ...bool) *_pluck {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	p.unscoped = _unscoped
 	return p
 }
 
@@ -1863,8 +1903,12 @@ func (s *_scan) ForShareNoWait() *_scan {
 	return s
 }
 
-func (s *_scan) Unscoped() *_scan {
-	s.unscoped = true
+func (s *_scan) Unscoped(unscoped ...bool) *_scan {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	s.unscoped = _unscoped
 	return s
 }
 
@@ -2023,8 +2067,12 @@ func (c *_shardingCount) QueryTx(tx *query.QueryTx) *_shardingCount {
 	return c
 }
 
-func (c *_shardingCount) Unscoped() *_shardingCount {
-	c.unscoped = true
+func (c *_shardingCount) Unscoped(unscoped ...bool) *_shardingCount {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	c.unscoped = _unscoped
 	return c
 }
 
@@ -2188,8 +2236,12 @@ func (c *_shardingCreate) QueryTx(tx *query.QueryTx) *_shardingCreate {
 	return c
 }
 
-func (c *_shardingCreate) Unscoped() *_shardingCreate {
-	c.unscoped = true
+func (c *_shardingCreate) Unscoped(unscoped ...bool) *_shardingCreate {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	c.unscoped = _unscoped
 	return c
 }
 
@@ -2340,8 +2392,12 @@ func (d *_shardingDelete) QueryTx(tx *query.QueryTx) *_shardingDelete {
 	return d
 }
 
-func (d *_shardingDelete) Unscoped() *_shardingDelete {
-	d.unscoped = true
+func (d *_shardingDelete) Unscoped(unscoped ...bool) *_shardingDelete {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	d.unscoped = _unscoped
 	return d
 }
 
@@ -2573,8 +2629,12 @@ func (f *_shardingFirst) ForShareNoWait() *_shardingFirst {
 	return f
 }
 
-func (f *_shardingFirst) Unscoped() *_shardingFirst {
-	f.unscoped = true
+func (f *_shardingFirst) Unscoped(unscoped ...bool) *_shardingFirst {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	f.unscoped = _unscoped
 	return f
 }
 
@@ -2808,8 +2868,12 @@ func (l *_shardingLast) ForShareNoWait() *_shardingLast {
 	return l
 }
 
-func (l *_shardingLast) Unscoped() *_shardingLast {
-	l.unscoped = true
+func (l *_shardingLast) Unscoped(unscoped ...bool) *_shardingLast {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	l.unscoped = _unscoped
 	return l
 }
 
@@ -3069,8 +3133,12 @@ func (l *_shardingList) ForShareNoWait() *_shardingList {
 	return l
 }
 
-func (l *_shardingList) Unscoped() *_shardingList {
-	l.unscoped = true
+func (l *_shardingList) Unscoped(unscoped ...bool) *_shardingList {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	l.unscoped = _unscoped
 	return l
 }
 
@@ -3364,8 +3432,12 @@ func (s *_shardingSum) QueryTx(tx *query.QueryTx) *_shardingSum {
 	return s
 }
 
-func (s *_shardingSum) Unscoped() *_shardingSum {
-	s.unscoped = true
+func (s *_shardingSum) Unscoped(unscoped ...bool) *_shardingSum {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	s.unscoped = _unscoped
 	return s
 }
 
@@ -3590,8 +3662,12 @@ func (t *_shardingTake) ForShareNoWait() *_shardingTake {
 	return t
 }
 
-func (t *_shardingTake) Unscoped() *_shardingTake {
-	t.unscoped = true
+func (t *_shardingTake) Unscoped(unscoped ...bool) *_shardingTake {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	t.unscoped = _unscoped
 	return t
 }
 
@@ -3799,8 +3875,12 @@ func (u *_shardingUpdate) QueryTx(tx *query.QueryTx) *_shardingUpdate {
 	return u
 }
 
-func (u *_shardingUpdate) Unscoped() *_shardingUpdate {
-	u.unscoped = true
+func (u *_shardingUpdate) Unscoped(unscoped ...bool) *_shardingUpdate {
+	_unscoped := true
+	if len(unscoped) > 0 {
+		_unscoped = unscoped[0]
+	}
+	u.unscoped = _unscoped
 	return u
 }
 
