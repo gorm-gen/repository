@@ -3904,7 +3904,7 @@ func (u *_shardingUpdate) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 		if innerTx != nil {
 			if err := innerTx.Commit(); err != nil {
 				if {{.RepoPkgName}}.IsRealErr(err) {
-					d.core.logger.Error("【{{.StructName}}.ShardingUpdate.Commit】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
+					u.core.logger.Error("【{{.StructName}}.ShardingUpdate.Commit】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
 				}
 				return 0, nil, err
 			}
