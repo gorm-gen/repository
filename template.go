@@ -2366,6 +2366,14 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 	if d.qTx != nil {
 		dq = d.qTx.{{.StructName}}
 	}
+	var innerTx *query.QueryTx
+	var cancel context.CancelFunc
+	if d.tx == nil && d.qTx == nil {
+		innerTx = d.core.q.Begin()
+		dq = innerTx.Order
+		ctx, cancel = context.WithCancel(ctx)
+		defer cancel()
+	}
 	var conditions []gen.Condition
 	if _len := len(d.conditionOpts); _len > 0 {
 		conditions = make([]gen.Condition, 0, _len)
@@ -2419,6 +2427,12 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 	}()
 	select {
 	case {{.ChanSign}}endChan:
+		if innerTx != nil {
+			if err := innerTx.Commit(); err != nil {
+				d.core.logger.Error("【{{.StructName}}.ShardingDelete.Commit】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
+				return 0, nil, err
+			}
+		}
 		rowsAffected := int64(0)
 		m := make(map[{{.ShardingKeyType}}]int64, _lenSharding)
 		sm.Range(func(key, value interface{}) bool {
@@ -2429,6 +2443,10 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 		})
 		return rowsAffected, m, nil
 	case err := {{.ChanSign}}errChan:
+		if innerTx != nil {
+			cancel()
+			_ = innerTx.Rollback()
+		}
 		return 0, nil, err
 	}
 }
