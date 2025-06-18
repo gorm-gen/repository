@@ -2429,7 +2429,9 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 	case {{.ChanSign}}endChan:
 		if innerTx != nil {
 			if err := innerTx.Commit(); err != nil {
-				d.core.logger.Error("【{{.StructName}}.ShardingDelete.Commit】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
+				if {{.RepoPkgName}}.IsRealErr(err) {
+					d.core.logger.Error("【{{.StructName}}.ShardingDelete.Commit】失败", zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
+				}
 				return 0, nil, err
 			}
 		}
