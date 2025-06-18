@@ -2056,6 +2056,8 @@ func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}
 	if c.qTx != nil {
 		cq = c.qTx.{{.StructName}}
 	}
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	var conditions []gen.Condition
 	if _len := len(c.conditionOpts); _len > 0 {
 		conditions = make([]gen.Condition, 0, _len)
@@ -3395,6 +3397,8 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 	if s.qTx != nil {
 		sq = s.qTx.{{.StructName}}
 	}
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	var conditions []gen.Condition
 	if _len := len(s.conditionOpts); _len > 0 {
 		conditions = make([]gen.Condition, 0, _len)
