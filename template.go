@@ -2603,6 +2603,8 @@ func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}
 	if f.qTx != nil {
 		fq = f.qTx.{{.StructName}}
 	}
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	var conditions []gen.Condition
 	if _len := len(f.conditionOpts); _len > 0 {
 		conditions = make([]gen.Condition, 0, _len)
@@ -2836,6 +2838,8 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 	if l.qTx != nil {
 		lq = l.qTx.{{.StructName}}
 	}
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	var conditions []gen.Condition
 	if _len := len(l.conditionOpts); _len > 0 {
 		conditions = make([]gen.Condition, 0, _len)
@@ -3619,6 +3623,8 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 	if t.qTx != nil {
 		tq = t.qTx.{{.StructName}}
 	}
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 	var conditions []gen.Condition
 	if _len := len(t.conditionOpts); _len > 0 {
 		conditions = make([]gen.Condition, 0, _len)
