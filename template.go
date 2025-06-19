@@ -2448,7 +2448,7 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 				Where(_conditionOpts...).
 				Do(ctx)
 			if err != nil {
-				errChan <- err
+				errChan {{.ChanSign}} err
 				return
 			}
 			sm.Store(sharding, rows)
@@ -2869,7 +2869,6 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 				Scopes(l.scopes...).
 				Where(_conditionOpts...).
 				Do(ctx)
-			res, err := lr.Where(_conditions...).Last()
 			if err != nil {
 				if !errors.Is(err, gorm.ErrRecordNotFound) {
 					errChan {{.ChanSign}} err
