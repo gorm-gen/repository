@@ -3472,8 +3472,6 @@ import (
 
 	"{{.GenQueryPkg}}"
 
-	"{{.RepoPkg}}"
-
 	"{{.ModelPkg}}"
 )
 
@@ -3601,40 +3599,9 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 	if len(t.sharding) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
-	tq := t.core.q.{{.StructName}}
-	if t.tx != nil {
-		tq = t.tx.{{.StructName}}
-	}
-	if t.qTx != nil {
-		tq = t.qTx.{{.StructName}}
-	}
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-	var conditions []gen.Condition
-	if _len := len(t.conditionOpts); _len > 0 {
-		conditions = make([]gen.Condition, 0, _len)
-		for _, opt := range t.conditionOpts {
-			conditions = append(conditions, opt(t.core))
-		}
-	}
-	var fieldExpr []field.Expr
-	if _len := len(t.selects); _len > 0 {
-		fieldExpr = make([]field.Expr, 0, _len)
-		if t.core.newTableName == nil {
-			fieldExpr = append(fieldExpr, t.selects...)
-		} else {
-			for _, v := range t.selects {
-				fieldExpr = append(fieldExpr, field.NewField(*t.core.newTableName, v.ColumnName().String()))
-			}
-		}
-	}
-	var orders []field.Expr
-	if _len := len(t.orderOpts); _len > 0 {
-		orders = make([]field.Expr, 0, _len)
-		for _, opt := range t.orderOpts {
-			orders = append(orders, opt(t.core))
-		}
-	}
+	_condLen := len(t.conditionOpts)
 	wg := sync.WaitGroup{}
 	endChan := make(chan struct{})
 	errChan := make(chan error)
@@ -3653,34 +3620,21 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 				{{.ChanSign}}t.worker
 			}()
 			defer wg.Done()
-			_conditions := make([]gen.Condition, len(conditions))
-			copy(_conditions, conditions)
-			_conditions = append(_conditions, Condition{{.ShardingKey}}(sharding)(t.core))
-			tr := tq.WithContext(ctx)
-			if len(fieldExpr) > 0 {
-				tr = tr.Select(fieldExpr...)
-			}
-			if t.writeDB {
-				tr = tr.WriteDB()
-			}
-			if t.unscoped {
-				tr = tr.Unscoped()
-			}
-			if len(t.scopes) > 0 {
-				tr = tr.Scopes(t.scopes...)
-			}
-			if (t.tx != nil || t.qTx != nil) && t.lock != nil {
-				tr = tr.Clauses(t.lock)
-			}
-			tr = tr.Where(_conditions...)
-			if len(orders) > 0 {
-				tr = tr.Order(orders...)
-			}
-			res, err := tr.Take()
+			_conditionOpts := make([]ConditionOption, _condLen, _condLen+1)
+			copy(_conditionOpts, t.conditionOpts)
+			_conditionOpts = append(_conditionOpts, ConditionSharding(sharding))
+			tr := t.core.Take()
+			tr.lock = t.lock
+			tr.writeDB = t.writeDB
+			res, err := tr.Tx(t.tx).
+				QueryTx(t.qTx).
+				Select(t.selects...).
+				Unscoped(t.unscoped).
+				Scopes(t.scopes...).
+				Where(_conditionOpts...).
+				Order(t.orderOpts...).
+				Do(ctx)
 			if err != nil {
-				if {{.RepoPkgName}}.IsRealErr(err) {
-					t.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingTake.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
-				}
 				if !errors.Is(err, gorm.ErrRecordNotFound) {
 					errChan {{.ChanSign}} err
 				}
