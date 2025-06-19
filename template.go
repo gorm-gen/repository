@@ -2243,30 +2243,40 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 	}
 	bs := uint(c.batchSize)
 	if length == 1 {
-		cr := c.core.Create().Tx(c.tx).QueryTx(c.qTx).BatchSize(bs).Values(c.values...).Scopes(c.scopes...)
-		if c.unscoped {
-			cr = cr.Unscoped()
-		}
-		return cr.Do(ctx)
+		return c.core.Create().
+			Tx(c.tx).
+			QueryTx(c.qTx).
+			Unscoped(c.unscoped).
+			BatchSize(bs).
+			Values(c.values...).
+			Scopes(c.scopes...).
+			Do(ctx)
 	}
 	m := make(map[{{.ShardingKeyType}}][]*{{.ModelName}}.{{.StructName}}, length)
 	for _, value := range c.values {
 		m[value.{{.ShardingKey}}] = append(m[value.{{.ShardingKey}}], value)
 	}
 	if len(m) == 1 {
-		cr := c.core.Create().Tx(c.tx).QueryTx(c.qTx).BatchSize(bs).Values(c.values...).Scopes(c.scopes...)
-		if c.unscoped {
-			cr = cr.Unscoped()
-		}
-		return cr.Do(ctx)
+		return c.core.Create().
+			Tx(c.tx).
+			QueryTx(c.qTx).
+			Unscoped(c.unscoped).
+			BatchSize(bs).
+			Values(c.values...).
+			Scopes(c.scopes...).
+			Do(ctx)
 	}
 	if c.tx != nil || c.qTx != nil {
 		for _, values := range m {
-			cr := c.core.Create().Tx(c.tx).QueryTx(c.qTx).BatchSize(bs).Values(values...).Scopes(c.scopes...)
-			if c.unscoped {
-				cr = cr.Unscoped()
-			}
-			if err = cr.Do(ctx); err != nil {
+			err = c.core.Create().
+				Tx(c.tx).
+				QueryTx(c.qTx).
+				Unscoped(c.unscoped).
+				BatchSize(bs).
+				Values(values...).
+				Scopes(c.scopes...).
+				Do(ctx)
+			if err != nil {
 				return
 			}
 		}
@@ -2281,11 +2291,14 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 			}
 		}()
 		for _, values := range m {
-			cr := c.core.Create().Tx(tx).BatchSize(bs).Values(values...).Scopes(c.scopes...)
-			if c.unscoped {
-				cr = cr.Unscoped()
-			}
-			if err = cr.Do(ctx); err != nil {
+			err = c.core.Create().
+				Tx(tx).
+				Unscoped(c.unscoped).
+				BatchSize(bs).
+				Values(values...).
+				Scopes(c.scopes...).
+				Do(ctx)
+			if err != nil {
 				return
 			}
 		}
