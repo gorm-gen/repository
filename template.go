@@ -3281,8 +3281,6 @@ import (
 	"gorm.io/gen/field"
 
 	"{{.GenQueryPkg}}"
-
-	"{{.RepoPkg}}"
 )
 
 type _shardingSum struct {
@@ -3367,23 +3365,9 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 	if _lenSharding == 0 {
 		return decimal.Zero, nil, nil
 	}
-	sq := s.core.q.{{.StructName}}
-	if s.tx != nil {
-		sq = s.tx.{{.StructName}}
-	}
-	if s.qTx != nil {
-		sq = s.qTx.{{.StructName}}
-	}
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
-	var conditions []gen.Condition
-	if _len := len(s.conditionOpts); _len > 0 {
-		conditions = make([]gen.Condition, 0, _len)
-		for _, opt := range s.conditionOpts {
-			conditions = append(conditions, opt(s.core))
-		}
-	}
-	expr := field.NewField("", s.genField.ColumnName().String()).Sum().As("sum")
+	_condLen := len(s.conditionOpts)
 	wg := sync.WaitGroup{}
 	sm := sync.Map{}
 	errChan := make(chan error)
@@ -3402,28 +3386,22 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 				{{.ChanSign}}s.worker
 			}()
 			defer wg.Done()
-			_conditions := make([]gen.Condition, len(conditions))
-			copy(_conditions, conditions)
-			_conditions = append(_conditions, Condition{{.ShardingKey}}(sharding)(s.core))
-			sr := sq.WithContext(ctx).Select(expr)
-			if s.writeDB {
-				sr = sr.WriteDB()
-			}
-			if s.unscoped {
-				sr = sr.Unscoped()
-			}
-			if len(s.scopes) > 0 {
-				sr = sr.Scopes(s.scopes...)
-			}
-			var data Sum
-			if err := sr.Where(_conditions...).Scan(&data); err != nil {
-				if {{.RepoPkgName}}.IsRealErr(err) {
-					s.core.logger.Error(fmt.Sprintf("【{{.StructName}}.ShardingSum.%{{.ShardingKeyTypeFormat}}】失败", sharding), zap.Error(err), zap.ByteString("debug.Stack", debug.Stack()))
-				}
+			_conditionOpts := make([]ConditionOption, _condLen, _condLen+1)
+			copy(_conditionOpts, s.conditionOpts)
+			_conditionOpts = append(_conditionOpts, ConditionSharding(sharding))
+			sr := s.core.Sum(s.genField)
+			sr.writeDB = s.writeDB
+			sum, err := sr.Tx(s.tx).
+				QueryTx(s.qTx).
+				Unscoped(s.unscoped).
+				Scopes(s.scopes...).
+				Where(_conditionOpts...).
+				Do(ctx)
+			if err != nil {
 				errChan {{.ChanSign}} err
 				return
 			}
-			sm.Store(sharding, data.Sum)
+			sm.Store(sharding, sum)
 			return
 		}(sharding)
 	}
