@@ -302,9 +302,9 @@ type _create struct {
 // Create 添加数据
 func ({{.Abbr}} *{{.StructName}}) Create() *_create {
 	return &_create{
-		core:     {{.Abbr}},
-		values:   make([]*{{.ModelName}}.{{.StructName}}, 0),
-		scopes:   make([]func(gen.Dao) gen.Dao, 0),
+		core:   {{.Abbr}},
+		values: make([]*{{.ModelName}}.{{.StructName}}, 0),
+		scopes: make([]func(gen.Dao) gen.Dao, 0),
 	}
 }
 
