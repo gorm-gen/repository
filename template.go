@@ -54,7 +54,6 @@ type {{.StructName}} struct {
 	q            *query.Query
 	db           *gorm.DB
 	logger       *zap.Logger
-	unscoped     bool
 	newTableName *string
 }
 
@@ -82,12 +81,6 @@ func WithDB(db *gorm.DB) Option {
 func WithNewTableName(newTableName string) Option {
 	return func({{.Abbr}} *{{.StructName}}) {
 		{{.Abbr}}.newTableName = &newTableName
-	}
-}
-
-func WithUnscoped() Option {
-	return func({{.Abbr}} *{{.StructName}}) {
-		{{.Abbr}}.unscoped = true
 	}
 }
 
@@ -185,7 +178,6 @@ type _count struct {
 func ({{.Abbr}} *{{.StructName}}) Count() *_count {
 	return &_count{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
 		conditionOpts: make([]ConditionOption, 0),
 		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
@@ -311,7 +303,6 @@ type _create struct {
 func ({{.Abbr}} *{{.StructName}}) Create() *_create {
 	return &_create{
 		core:     {{.Abbr}},
-		unscoped: {{.Abbr}}.unscoped,
 		values:   make([]*{{.ModelName}}.{{.StructName}}, 0),
 		scopes:   make([]func(gen.Dao) gen.Dao, 0),
 	}
@@ -431,7 +422,6 @@ type _delete struct {
 func ({{.Abbr}} *{{.StructName}}) Delete() *_delete {
 	return &_delete{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
 		conditionOpts: make([]ConditionOption, 0),
 		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 	}
@@ -554,7 +544,6 @@ type _first struct {
 func ({{.Abbr}} *{{.StructName}}) First() *_first {
 	return &_first{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
 		selects:       make([]field.Expr, 0),
 		relationOpts:  make([]RelationOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
@@ -750,7 +739,6 @@ type _last struct {
 func ({{.Abbr}} *{{.StructName}}) Last() *_last {
 	return &_last{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
 		selects:       make([]field.Expr, 0),
 		relationOpts:  make([]RelationOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
@@ -950,7 +938,6 @@ type _list struct {
 func ({{.Abbr}} *{{.StructName}}) List() *_list {
 	return &_list{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
 		selects:       make([]field.Expr, 0),
 		relationOpts:  make([]RelationOption, 0),
 		orderOpts:     make([]OrderOption, 0),
@@ -1172,7 +1159,6 @@ type _take struct {
 func ({{.Abbr}} *{{.StructName}}) Take() *_take {
 	return &_take{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
 		selects:       make([]field.Expr, 0),
 		relationOpts:  make([]RelationOption, 0),
 		orderOpts:     make([]OrderOption, 0),
@@ -1377,7 +1363,6 @@ type _update struct {
 func ({{.Abbr}} *{{.StructName}}) Update() *_update {
 	return &_update{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
 		updateOpts:    make([]UpdateOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
 		scopes:        make([]func(gen.Dao) gen.Dao, 0),
@@ -1513,7 +1498,6 @@ type _sum struct {
 func ({{.Abbr}} *{{.StructName}}) Sum(genField field.Expr) *_sum {
 	return &_sum{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
 		genField:      genField,
 		conditionOpts: make([]ConditionOption, 0),
 		scopes:        make([]func(gen.Dao) gen.Dao, 0),
@@ -1651,7 +1635,6 @@ func ({{.Abbr}} *{{.StructName}}) Pluck(genField field.Expr, dest interface{}) *
 		genField:      genField,
 		dest:          dest,
 		scopes:        make([]func(gen.Dao) gen.Dao, 0),
-		unscoped:      {{.Abbr}}.unscoped,
 		orderOpts:     make([]OrderOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
 	}
@@ -1844,7 +1827,6 @@ func ({{.Abbr}} *{{.StructName}}) Scan(dest interface{}) *_scan {
 		dest:          dest,
 		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 		selects:       make([]field.Expr, 0),
-		unscoped:      {{.Abbr}}.unscoped,
 		orderOpts:     make([]OrderOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
 	}
@@ -2035,7 +2017,7 @@ type _shardingCount struct {
 func ({{.Abbr}} *{{.StructName}}) ShardingCount(sharding []{{.ShardingKeyType}}) *_shardingCount {
 	return &_shardingCount{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
+		unscoped:      true,
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
 		worker:        make(chan struct{}, runtime.NumCPU()),
@@ -2191,7 +2173,7 @@ type _shardingCreate struct {
 func ({{.Abbr}} *{{.StructName}}) ShardingCreate() *_shardingCreate {
 	return &_shardingCreate{
 		core:     {{.Abbr}},
-		unscoped: {{.Abbr}}.unscoped,
+		unscoped: true,
 		values:   make([]*{{.ModelName}}.{{.StructName}}, 0),
 		scopes:   make([]func(gen.Dao) gen.Dao, 0),
 	}
@@ -2350,7 +2332,7 @@ type _shardingDelete struct {
 func ({{.Abbr}} *{{.StructName}}) ShardingDelete(sharding []{{.ShardingKeyType}}) *_shardingDelete {
 	return &_shardingDelete{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
+		unscoped:      true,
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
 		worker:        make(chan struct{}, runtime.NumCPU()),
@@ -2533,7 +2515,7 @@ type _shardingFirst struct {
 func ({{.Abbr}} *{{.StructName}}) ShardingFirst(sharding []{{.ShardingKeyType}}) *_shardingFirst {
 	return &_shardingFirst{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
+		unscoped:      true,
 		selects:       make([]field.Expr, 0),
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
@@ -2736,7 +2718,7 @@ type _shardingLast struct {
 func ({{.Abbr}} *{{.StructName}}) ShardingLast(sharding []{{.ShardingKeyType}}) *_shardingLast {
 	return &_shardingLast{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
+		unscoped:      true,
 		selects:       make([]field.Expr, 0),
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
@@ -2944,7 +2926,7 @@ type _shardingList struct {
 func ({{.Abbr}} *{{.StructName}}) ShardingList(sharding []{{.ShardingKeyType}}) *_shardingList {
 	return &_shardingList{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
+		unscoped:      true,
 		selects:       make([]field.Expr, 0),
 		orderOpts:     make([]OrderOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
@@ -3258,7 +3240,7 @@ type _shardingSum struct {
 func ({{.Abbr}} *{{.StructName}}) ShardingSum(genField field.Expr, sharding []{{.ShardingKeyType}}) *_shardingSum {
 	return &_shardingSum{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
+		unscoped:      true,
 		genField:      genField,
 		conditionOpts: make([]ConditionOption, 0),
 		sharding:      sharding,
@@ -3430,7 +3412,7 @@ type _shardingTake struct {
 func ({{.Abbr}} *{{.StructName}}) ShardingTake(sharding []{{.ShardingKeyType}}) *_shardingTake {
 	return &_shardingTake{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
+		unscoped:      true,
 		selects:       make([]field.Expr, 0),
 		orderOpts:     make([]OrderOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
@@ -3634,7 +3616,7 @@ type _shardingUpdate struct {
 func ({{.Abbr}} *{{.StructName}}) ShardingUpdate(sharding []{{.ShardingKeyType}}) *_shardingUpdate {
 	return &_shardingUpdate{
 		core:          {{.Abbr}},
-		unscoped:      {{.Abbr}}.unscoped,
+		unscoped:      true,
 		scopes:        make([]func(gen.Dao) gen.Dao, 0),
 		updateOpts:    make([]UpdateOption, 0),
 		conditionOpts: make([]ConditionOption, 0),
