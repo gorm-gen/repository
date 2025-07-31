@@ -233,10 +233,16 @@ func Condition%[1]s(v ...%[2]s) ConditionOption {
 			if length == 0 {
 				return %[3]s.q.%[4]s.Table(*%[3]s.newTableName).%[1]s.Eq("")
 			}
+			if length > 1 {
+				return %[3]s.q.%[4]s.Table(*%[3]s.newTableName).%[1]s.In(v...)
+			}
 			return %[3]s.q.%[4]s.Table(*%[3]s.newTableName).%[1]s.Eq(v[0])
 		}
 		if length == 0 {
 			return %[3]s.q.%[4]s.%[1]s.Eq("")
+		}
+		if length > 1 {
+			return %[3]s.q.%[4]s.%[1]s.In(v...)
 		}
 		return %[3]s.q.%[4]s.%[1]s.Eq(v[0])
 	}
@@ -252,10 +258,16 @@ func Condition%[1]sNeq(v ...%[2]s) ConditionOption {
 			if length == 0 {
 				return %[3]s.q.%[4]s.Table(*%[3]s.newTableName).%[1]s.Neq("")
 			}
+			if length > 1 {
+				return %[3]s.q.%[4]s.Table(*%[3]s.newTableName).%[1]s.NotIn(v...)
+			}
 			return %[3]s.q.%[4]s.Table(*%[3]s.newTableName).%[1]s.Neq(v[0])
 		}
 		if length == 0 {
 			return %[3]s.q.%[4]s.%[1]s.Neq("")
+		}
+		if length > 1 {
+			return %[3]s.q.%[4]s.%[1]s.NotIn(v...)
 		}
 		return %[3]s.q.%[4]s.%[1]s.Neq(v[0])
 	}
