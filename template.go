@@ -156,6 +156,7 @@ import (
 	"context"
 	"runtime/debug"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 
@@ -172,6 +173,7 @@ type _count struct {
 	conditionOpts []ConditionOption
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // Count 获取数据总记录
@@ -225,8 +227,21 @@ func (c *_count) WriteDB() *_count {
 	return c
 }
 
+func (c *_count) Trace() *_count {
+	c.trace = true
+	return c
+}
+
 // Do 执行获取数据总记录
 func (c *_count) Do(ctx context.Context) (int64, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.Count", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	cq := c.core.q.{{.StructName}}
 	if c.tx != nil {
 		cq = c.tx.{{.StructName}}
@@ -279,6 +294,7 @@ import (
 	"context"
 	"runtime/debug"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 
@@ -297,6 +313,7 @@ type _create struct {
 	values    []*{{.ModelName}}.{{.StructName}}
 	batchSize int
 	scopes    []func(gen.Dao) gen.Dao
+	trace     bool
 }
 
 // Create 添加数据
@@ -351,8 +368,21 @@ func (c *_create) BatchSize(batchSize uint) *_create {
 	return c
 }
 
+func (c *_create) Trace() *_create {
+	c.trace = true
+	return c
+}
+
 // Do 执行添加数据
 func (c *_create) Do(ctx context.Context) (err error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.Create", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	length := len(c.values)
 	if length == 0 {
 		return nil
@@ -401,6 +431,7 @@ import (
 	"context"
 	"runtime/debug"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 
@@ -416,6 +447,7 @@ type _delete struct {
 	unscoped      bool
 	conditionOpts []ConditionOption
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // Delete 删除数据
@@ -464,8 +496,21 @@ func (d *_delete) Where(opts ...ConditionOption) *_delete {
 	return d
 }
 
+func (d *_delete) Trace() *_delete {
+	d.trace = true
+	return d
+}
+
 // Do 执行删除数据
 func (d *_delete) Do(ctx context.Context) (int64, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.Delete", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	dq := d.core.q.{{.StructName}}
 	if d.tx != nil {
 		dq = d.tx.{{.StructName}}
@@ -515,6 +560,7 @@ import (
 	"context"
 	"runtime/debug"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -538,6 +584,7 @@ type _first struct {
 	conditionOpts []ConditionOption
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // First 获取第一条记录（主键升序）
@@ -633,8 +680,21 @@ func (f *_first) WriteDB() *_first {
 	return f
 }
 
+func (f *_first) Trace() *_first {
+	f.trace = true
+	return f
+}
+
 // Do 执行获取第一条记录（主键升序）
 func (f *_first) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.First", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	fq := f.core.q.{{.StructName}}
 	if f.tx != nil {
 		fq = f.tx.{{.StructName}}
@@ -710,6 +770,7 @@ import (
 	"context"
 	"runtime/debug"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -733,6 +794,7 @@ type _last struct {
 	conditionOpts []ConditionOption
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // Last 获取最后一条记录（主键降序）
@@ -828,8 +890,21 @@ func (l *_last) WriteDB() *_last {
 	return l
 }
 
+func (l *_last) Trace() *_last {
+	l.trace = true
+	return l
+}
+
 // Do 执行获取最后一条记录（主键降序）
 func (l *_last) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.Last", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	lq := l.core.q.{{.StructName}}
 	if l.tx != nil {
 		lq = l.tx.{{.StructName}}
@@ -906,6 +981,7 @@ import (
 	"runtime/debug"
 
 	page "github.com/gorm-gen/paginate/gen"
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -932,6 +1008,7 @@ type _list struct {
 	conditionOpts []ConditionOption
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // List 获取数据列表
@@ -1040,8 +1117,21 @@ func (l *_list) Page(page, pageSize uint) *_list {
 	return l
 }
 
+func (l *_list) Trace() *_list {
+	l.trace = true
+	return l
+}
+
 // Do 执行获取数据列表
 func (l *_list) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.List", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	lq := l.core.q.{{.StructName}}
 	if l.tx != nil {
 		lq = l.tx.{{.StructName}}
@@ -1129,6 +1219,7 @@ import (
 	"context"
 	"runtime/debug"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -1153,6 +1244,7 @@ type _take struct {
 	conditionOpts []ConditionOption
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // Take 获取一条记录
@@ -1254,8 +1346,21 @@ func (t *_take) WriteDB() *_take {
 	return t
 }
 
+func (t *_take) Trace() *_take {
+	t.trace = true
+	return t
+}
+
 // Do 执行获取一条记录
 func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.Take", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	tq := t.core.q.{{.StructName}}
 	if t.tx != nil {
 		tq = t.tx.{{.StructName}}
@@ -1340,6 +1445,7 @@ import (
 	"context"
 	"runtime/debug"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -1357,6 +1463,7 @@ type _update struct {
 	updateOpts    []UpdateOption
 	conditionOpts []ConditionOption
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // Update 更新数据
@@ -1411,8 +1518,21 @@ func (u *_update) Where(opts ...ConditionOption) *_update {
 	return u
 }
 
+func (u *_update) Trace() *_update {
+	u.trace = true
+	return u
+}
+
 // Do 执行更新数据
 func (u *_update) Do(ctx context.Context) (int64, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.Update", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	_length := len(u.updateOpts)
 	if _length == 0 {
 		return 0, nil
@@ -1473,6 +1593,7 @@ import (
 	"context"
 	"runtime/debug"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 	"gorm.io/gen"
@@ -1492,6 +1613,7 @@ type _sum struct {
 	conditionOpts []ConditionOption
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // Sum SUM数据
@@ -1541,12 +1663,25 @@ func (s *_sum) WriteDB() *_sum {
 	return s
 }
 
+func (s *_sum) Trace() *_sum {
+	s.trace = true
+	return s
+}
+
 func (s *_sum) Where(opts ...ConditionOption) *_sum {
 	s.conditionOpts = append(s.conditionOpts, opts...)
 	return s
 }
 ` + "\ntype Sum struct {\n    Sum decimal.Decimal `json:\"sum\"`\n}\n\n" + `// Do 执行SUM数据
 func (s *_sum) Do(ctx context.Context) (decimal.Decimal, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.Sum", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	sq := s.core.q.{{.StructName}}
 	if s.tx != nil {
 		sq = s.tx.{{.StructName}}
@@ -1602,6 +1737,7 @@ import (
 	"runtime/debug"
 
 	page "github.com/gorm-gen/paginate/gen"
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -1626,6 +1762,7 @@ type _pluck struct {
 	orderOpts     []OrderOption
 	conditionOpts []ConditionOption
 	writeDB       bool
+	trace         bool
 }
 
 // Pluck 从数据库中查询单列并扫描结果到切片
@@ -1724,8 +1861,21 @@ func (p *_pluck) Scopes(funcs ...func(gen.Dao) gen.Dao) *_pluck {
 	return p
 }
 
+func (p *_pluck) Trace() *_pluck {
+	p.trace = true
+	return p
+}
+
 // Do 执行从数据库中查询单列并扫描结果到切片
 func (p *_pluck) Do(ctx context.Context) error {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.Pluck", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	pq := p.core.q.{{.StructName}}
 	if p.tx != nil {
 		pq = p.tx.{{.StructName}}
@@ -1794,6 +1944,7 @@ import (
 	"runtime/debug"
 
 	page "github.com/gorm-gen/paginate/gen"
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -1818,6 +1969,7 @@ type _scan struct {
 	orderOpts     []OrderOption
 	conditionOpts []ConditionOption
 	writeDB       bool
+	trace         bool
 }
 
 // Scan 从数据库中查询多个列并扫描结果到切片
@@ -1921,8 +2073,21 @@ func (s *_scan) Scopes(funcs ...func(gen.Dao) gen.Dao) *_scan {
 	return s
 }
 
+func (s *_scan) Trace() *_scan {
+	s.trace = true
+	return s
+}
+
 // Do 执行从数据库中查询多个列并扫描结果到切片
 func (s *_scan) Do(ctx context.Context) error {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.Scan", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	sq := s.core.q.{{.StructName}}
 	if s.tx != nil {
 		sq = s.tx.{{.StructName}}
@@ -1995,6 +2160,7 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 
@@ -2011,6 +2177,7 @@ type _shardingCount struct {
 	worker        chan struct{}
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // ShardingCount 获取分表数据总记录
@@ -2071,8 +2238,21 @@ func (c *_shardingCount) WriteDB() *_shardingCount {
 	return c
 }
 
+func (c *_shardingCount) Trace() *_shardingCount {
+	c.trace = true
+	return c
+}
+
 // Do 执行获取分表数据总记录
 func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}}]int64, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingCount", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	_lenSharding := len(c.sharding)
 	if _lenSharding == 0 {
 		return 0, nil, nil
@@ -2151,6 +2331,7 @@ import (
 	"fmt"
 	"runtime/debug"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 
@@ -2167,6 +2348,7 @@ type _shardingCreate struct {
 	values    []*{{.ModelName}}.{{.StructName}}
 	batchSize int
 	scopes    []func(gen.Dao) gen.Dao
+	trace     bool
 }
 
 // ShardingCreate 分表添加数据
@@ -2222,8 +2404,21 @@ func (c *_shardingCreate) BatchSize(batchSize uint) *_shardingCreate {
 	return c
 }
 
+func (c *_shardingCreate) Trace() *_shardingCreate {
+	c.trace = true
+	return c
+}
+
 // Do 执行添加数据
 func (c *_shardingCreate) Do(ctx context.Context) (err error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingCreate", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	length := len(c.values)
 	if length == 0 {
 		return nil
@@ -2309,6 +2504,7 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 
@@ -2326,6 +2522,7 @@ type _shardingDelete struct {
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // ShardingDelete 删除分表数据
@@ -2385,8 +2582,21 @@ func (d *_shardingDelete) Where(opts ...ConditionOption) *_shardingDelete {
 	return d
 }
 
+func (d *_shardingDelete) Trace() *_shardingDelete {
+	d.trace = true
+	return d
+}
+
 // Do 执行删除分表数据
 func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}}]int64, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingDelete", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	_lenSharding := len(d.sharding)
 	if _lenSharding == 0 {
 		return 0, nil, nil
@@ -2486,6 +2696,7 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -2509,6 +2720,7 @@ type _shardingFirst struct {
 	worker        chan struct{}
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // ShardingFirst 获取分表中随机第一条记录（主键升序）
@@ -2609,8 +2821,21 @@ func (f *_shardingFirst) WriteDB() *_shardingFirst {
 	return f
 }
 
+func (f *_shardingFirst) Trace() *_shardingFirst {
+	f.trace = true
+	return f
+}
+
 // Do 执行获取分表中随机第一条记录（主键升序）
 func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingFirst", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	if len(f.sharding) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
@@ -2689,6 +2914,7 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -2712,6 +2938,7 @@ type _shardingLast struct {
 	worker        chan struct{}
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // ShardingLast 获取分表中随机最后一条记录（主键降序）
@@ -2812,8 +3039,21 @@ func (l *_shardingLast) WriteDB() *_shardingLast {
 	return l
 }
 
+func (l *_shardingLast) Trace() *_shardingLast {
+	l.trace = true
+	return l
+}
+
 // Do 执行获取分表中随机最后一条记录（主键降序）
 func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingLast", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	if len(l.sharding) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
@@ -2893,6 +3133,7 @@ import (
 
 	page "github.com/gorm-gen/paginate/gen"
 	"github.com/gorm-gen/sharding/query/list"{{.DecimalPkg}}
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -2920,6 +3161,7 @@ type _shardingList struct {
 	asc           bool
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // ShardingList 获取分表数据列表
@@ -3053,8 +3295,21 @@ func (l *_shardingList) WriteDB() *_shardingList {
 	return l
 }
 
+func (l *_shardingList) Trace() *_shardingList {
+	l.trace = true
+	return l
+}
+
 // Do 执行获取分表数据列表
 func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, int64, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingList", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	empty := make([]*{{.ModelName}}.{{.StructName}}, 0)
 	_lenSharding := len(l.sharding)
 	if _lenSharding == 0 {
@@ -3215,6 +3470,7 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 	"gorm.io/gen"
@@ -3234,6 +3490,7 @@ type _shardingSum struct {
 	worker        chan struct{}
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // ShardingSum 分表SUM数据
@@ -3299,8 +3556,21 @@ func (s *_shardingSum) WriteDB() *_shardingSum {
 	return s
 }
 
+func (s *_shardingSum) Trace() *_shardingSum {
+	s.trace = true
+	return s
+}
+
 // Do 执行分表SUM数据
 func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.ShardingKeyType}}]decimal.Decimal, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingSum", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	_lenSharding := len(s.sharding)
 	if _lenSharding == 0 {
 		return decimal.Zero, nil, nil
@@ -3382,6 +3652,7 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 	"gorm.io/gen/field"
@@ -3406,6 +3677,7 @@ type _shardingTake struct {
 	worker        chan struct{}
 	writeDB       bool
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // ShardingTake 获取分表中随机一条记录
@@ -3512,8 +3784,21 @@ func (t *_shardingTake) WriteDB() *_shardingTake {
 	return t
 }
 
+func (t *_shardingTake) Trace() *_shardingTake {
+	t.trace = true
+	return t
+}
+
 // Do 执行获取分表中随机一条记录
 func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingTake", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	if len(t.sharding) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
@@ -3592,6 +3877,7 @@ import (
 	"runtime/debug"
 	"sync"
 
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
 
@@ -3610,6 +3896,7 @@ type _shardingUpdate struct {
 	sharding      []{{.ShardingKeyType}}
 	worker        chan struct{}
 	scopes        []func(gen.Dao) gen.Dao
+	trace         bool
 }
 
 // ShardingUpdate 更新分表数据
@@ -3675,8 +3962,21 @@ func (u *_shardingUpdate) Where(opts ...ConditionOption) *_shardingUpdate {
 	return u
 }
 
+func (u *_shardingUpdate) Trace() *_shardingUpdate {
+	u.trace = true
+	return u
+}
+
 // Do 执行更新分表数据
 func (u *_shardingUpdate) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}}]int64, error) {
+	if u.trace {
+		if parent := opentracing.SpanFromContext(ctx); parent != nil {
+			if tracer := opentracing.GlobalTracer(); tracer != nil {
+				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingUpdate", opentracing.ChildOf(parent.Context()))
+				defer span.Finish()
+			}
+		}
+	}
 	_lenSharding := len(u.sharding)
 	if len(u.updateOpts) == 0 || _lenSharding == 0 {
 		return 0, nil, nil
