@@ -234,7 +234,7 @@ func (c *_count) Trace() *_count {
 
 // Do 执行获取数据总记录
 func (c *_count) Do(ctx context.Context) (int64, error) {
-	if u.trace {
+	if c.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.Count", opentracing.ChildOf(parent.Context()))
@@ -375,7 +375,7 @@ func (c *_create) Trace() *_create {
 
 // Do 执行添加数据
 func (c *_create) Do(ctx context.Context) (err error) {
-	if u.trace {
+	if c.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.Create", opentracing.ChildOf(parent.Context()))
@@ -503,7 +503,7 @@ func (d *_delete) Trace() *_delete {
 
 // Do 执行删除数据
 func (d *_delete) Do(ctx context.Context) (int64, error) {
-	if u.trace {
+	if d.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.Delete", opentracing.ChildOf(parent.Context()))
@@ -687,7 +687,7 @@ func (f *_first) Trace() *_first {
 
 // Do 执行获取第一条记录（主键升序）
 func (f *_first) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
-	if u.trace {
+	if f.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.First", opentracing.ChildOf(parent.Context()))
@@ -897,7 +897,7 @@ func (l *_last) Trace() *_last {
 
 // Do 执行获取最后一条记录（主键降序）
 func (l *_last) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
-	if u.trace {
+	if l.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.Last", opentracing.ChildOf(parent.Context()))
@@ -1124,7 +1124,7 @@ func (l *_list) Trace() *_list {
 
 // Do 执行获取数据列表
 func (l *_list) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, error) {
-	if u.trace {
+	if l.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.List", opentracing.ChildOf(parent.Context()))
@@ -1353,7 +1353,7 @@ func (t *_take) Trace() *_take {
 
 // Do 执行获取一条记录
 func (t *_take) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
-	if u.trace {
+	if t.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.Take", opentracing.ChildOf(parent.Context()))
@@ -1674,7 +1674,7 @@ func (s *_sum) Where(opts ...ConditionOption) *_sum {
 }
 ` + "\ntype Sum struct {\n    Sum decimal.Decimal `json:\"sum\"`\n}\n\n" + `// Do 执行SUM数据
 func (s *_sum) Do(ctx context.Context) (decimal.Decimal, error) {
-	if u.trace {
+	if s.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.Sum", opentracing.ChildOf(parent.Context()))
@@ -1868,7 +1868,7 @@ func (p *_pluck) Trace() *_pluck {
 
 // Do 执行从数据库中查询单列并扫描结果到切片
 func (p *_pluck) Do(ctx context.Context) error {
-	if u.trace {
+	if p.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.Pluck", opentracing.ChildOf(parent.Context()))
@@ -2080,7 +2080,7 @@ func (s *_scan) Trace() *_scan {
 
 // Do 执行从数据库中查询多个列并扫描结果到切片
 func (s *_scan) Do(ctx context.Context) error {
-	if u.trace {
+	if s.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.Scan", opentracing.ChildOf(parent.Context()))
@@ -2245,7 +2245,7 @@ func (c *_shardingCount) Trace() *_shardingCount {
 
 // Do 执行获取分表数据总记录
 func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}}]int64, error) {
-	if u.trace {
+	if c.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingCount", opentracing.ChildOf(parent.Context()))
@@ -2411,7 +2411,7 @@ func (c *_shardingCreate) Trace() *_shardingCreate {
 
 // Do 执行添加数据
 func (c *_shardingCreate) Do(ctx context.Context) (err error) {
-	if u.trace {
+	if c.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingCreate", opentracing.ChildOf(parent.Context()))
@@ -2589,7 +2589,7 @@ func (d *_shardingDelete) Trace() *_shardingDelete {
 
 // Do 执行删除分表数据
 func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}}]int64, error) {
-	if u.trace {
+	if d.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingDelete", opentracing.ChildOf(parent.Context()))
@@ -2828,7 +2828,7 @@ func (f *_shardingFirst) Trace() *_shardingFirst {
 
 // Do 执行获取分表中随机第一条记录（主键升序）
 func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
-	if u.trace {
+	if f.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingFirst", opentracing.ChildOf(parent.Context()))
@@ -3046,7 +3046,7 @@ func (l *_shardingLast) Trace() *_shardingLast {
 
 // Do 执行获取分表中随机最后一条记录（主键降序）
 func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
-	if u.trace {
+	if l.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingLast", opentracing.ChildOf(parent.Context()))
@@ -3302,7 +3302,7 @@ func (l *_shardingList) Trace() *_shardingList {
 
 // Do 执行获取分表数据列表
 func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName}}, int64, error) {
-	if u.trace {
+	if l.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingList", opentracing.ChildOf(parent.Context()))
@@ -3563,7 +3563,7 @@ func (s *_shardingSum) Trace() *_shardingSum {
 
 // Do 执行分表SUM数据
 func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.ShardingKeyType}}]decimal.Decimal, error) {
-	if u.trace {
+	if s.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingSum", opentracing.ChildOf(parent.Context()))
@@ -3791,7 +3791,7 @@ func (t *_shardingTake) Trace() *_shardingTake {
 
 // Do 执行获取分表中随机一条记录
 func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}, error) {
-	if u.trace {
+	if t.trace {
 		if parent := opentracing.SpanFromContext(ctx); parent != nil {
 			if tracer := opentracing.GlobalTracer(); tracer != nil {
 				span := tracer.StartSpan("SQL:{{.StructName}}.ShardingTake", opentracing.ChildOf(parent.Context()))
