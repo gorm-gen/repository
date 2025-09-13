@@ -1509,6 +1509,10 @@ func (u *_update) Scopes(funcs ...func(gen.Dao) gen.Dao) *_update {
 }
 
 func (u *_update) Update(opts ...UpdateOption) *_update {
+	return u.Set(opts...)
+}
+
+func (u *_update) Set(opts ...UpdateOption) *_update {
 	u.updateOpts = append(u.updateOpts, opts...)
 	return u
 }
@@ -3953,6 +3957,10 @@ func (u *_shardingUpdate) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingUpdat
 }
 
 func (u *_shardingUpdate) Update(opts ...UpdateOption) *_shardingUpdate {
+	return u.Set(opts...)
+}
+
+func (u *_shardingUpdate) Set(opts ...UpdateOption) *_shardingUpdate {
 	u.updateOpts = append(u.updateOpts, opts...)
 	return u
 }
