@@ -1508,6 +1508,11 @@ func (u *_update) Scopes(funcs ...func(gen.Dao) gen.Dao) *_update {
 	return u
 }
 
+// Update update fields
+//
+// Deprecated: The future will be removed, this function simply calls [Set].
+//
+//go:fix inline
 func (u *_update) Update(opts ...UpdateOption) *_update {
 	return u.Set(opts...)
 }
@@ -3956,6 +3961,11 @@ func (u *_shardingUpdate) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingUpdat
 	return u
 }
 
+// Update update fields
+//
+// Deprecated: The future will be removed, this function simply calls [Set].
+//
+//go:fix inline
 func (u *_shardingUpdate) Update(opts ...UpdateOption) *_shardingUpdate {
 	return u.Set(opts...)
 }
