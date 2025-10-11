@@ -29,11 +29,18 @@ func GetQuery() *query.Query {
 	return q
 }
 
+// IsNotWaitErr 判断是否为当无法获取到锁时直接返回错误
+func IsNotWaitErr(err error) bool {
+	s := "Error 3572 (HY000): Statement aborted because lock(s) could not be acquired immediately and NOWAIT is set."
+	return err.Error() == s
+}
+
 // IsRealErr 是否为非超时和查询不到的错误
 func IsRealErr(err error) bool {
 	return !errors.Is(err, gorm.ErrRecordNotFound) &&
 		!errors.Is(err, context.DeadlineExceeded) &&
-		!errors.Is(err, context.Canceled)
+		!errors.Is(err, context.Canceled) &&
+		!IsNotWaitErr(err)
 }
 `
 }
