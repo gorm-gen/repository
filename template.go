@@ -2352,6 +2352,8 @@ func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}
 		return count, m, nil
 	case err := {{.ChanSign}}errChan:
 		return 0, nil, err
+	case {{.ChanSign}}ctx.Done():
+		return 0, nil, ctx.Err()
 	}
 }
 `
@@ -2714,6 +2716,8 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 			_ = innerTx.Rollback()
 		}
 		return 0, nil, err
+	case {{.ChanSign}}ctx.Done():
+		return 0, nil, ctx.Err()
 	}
 }
 `
@@ -2932,6 +2936,8 @@ func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}
 		return nil, gorm.ErrRecordNotFound
 	case err := {{.ChanSign}}errChan:
 		return nil, err
+	case {{.ChanSign}}ctx.Done():
+		return nil, ctx.Err()
 	}
 }
 `
@@ -3150,6 +3156,8 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 		return nil, gorm.ErrRecordNotFound
 	case err := {{.ChanSign}}errChan:
 		return nil, err
+	case {{.ChanSign}}ctx.Done():
+		return nil, ctx.Err()
 	}
 }
 `
@@ -3489,6 +3497,8 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 		return __list, count, nil
 	case err = {{.ChanSign}}errChan:
 		return nil, 0, err
+	case {{.ChanSign}}ctx.Done():
+		return nil, 0, ctx.Err()
 	}
 }
 `
@@ -3670,6 +3680,8 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 		return sum, m, nil
 	case err := {{.ChanSign}}errChan:
 		return decimal.Zero, nil, err
+	case {{.ChanSign}}ctx.Done():
+		return decimal.Zero, nil, ctx.Err()
 	}
 }
 `
@@ -3896,6 +3908,8 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 		return nil, gorm.ErrRecordNotFound
 	case err := {{.ChanSign}}errChan:
 		return nil, err
+	case {{.ChanSign}}ctx.Done():
+		return nil, ctx.Err()
 	}
 }
 `
@@ -4104,6 +4118,8 @@ func (u *_shardingUpdate) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 			_ = innerTx.Rollback()
 		}
 		return 0, nil, err
+	case {{.ChanSign}}ctx.Done():
+		return 0, nil, ctx.Err()
 	}
 }
 `
