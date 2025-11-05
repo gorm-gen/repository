@@ -2295,7 +2295,8 @@ func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}
 	if _lenSharding == 0 {
 		return 0, nil, nil
 	}
-	ctx, cancel := context.WithCancel(ctx)
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithCancel(ctx)
 	defer cancel()
 	_condLen := len(c.conditionOpts)
 	sm := sync.Map{}
@@ -2881,7 +2882,8 @@ func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}
 	if len(f.sharding) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
-	ctx, cancel := context.WithCancel(ctx)
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithCancel(ctx)
 	defer cancel()
 	_condLen := len(f.conditionOpts)
 	wg := sync.WaitGroup{}
@@ -3101,7 +3103,8 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 	if len(l.sharding) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
-	ctx, cancel := context.WithCancel(ctx)
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithCancel(ctx)
 	defer cancel()
 	_condLen := len(l.conditionOpts)
 	wg := sync.WaitGroup{}
@@ -3361,7 +3364,8 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 	if _lenSharding == 0 {
 		return empty, 0, nil
 	}
-	ctx, cancel := context.WithCancel(ctx)
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithCancel(ctx)
 	defer cancel()
 	// 获取分表数据总记录
 	shardingCount := l.core.ShardingCount(l.sharding).
@@ -3623,7 +3627,8 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 	if _lenSharding == 0 {
 		return decimal.Zero, nil, nil
 	}
-	ctx, cancel := context.WithCancel(ctx)
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithCancel(ctx)
 	defer cancel()
 	_condLen := len(s.conditionOpts)
 	wg := sync.WaitGroup{}
@@ -3852,7 +3857,8 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 	if len(t.sharding) == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
-	ctx, cancel := context.WithCancel(ctx)
+	var cancel context.CancelFunc
+	ctx, cancel = context.WithCancel(ctx)
 	defer cancel()
 	_condLen := len(t.conditionOpts)
 	wg := sync.WaitGroup{}
