@@ -2301,8 +2301,8 @@ func (c *_shardingCount) Do(ctx context.Context) (int64, map[{{.ShardingKeyType}
 	_condLen := len(c.conditionOpts)
 	sm := sync.Map{}
 	wg := sync.WaitGroup{}
-	errChan := make(chan error)
-	endChan := make(chan struct{})
+	errChan := make(chan error, _lenSharding)
+	endChan := make(chan struct{}, 1)
 	for _, sharding := range c.sharding {
 		c.worker {{.ChanSign}} struct{}{}
 		wg.Add(1)
@@ -2654,8 +2654,8 @@ func (d *_shardingDelete) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 	_condLen := len(d.conditionOpts)
 	sm := sync.Map{}
 	wg := sync.WaitGroup{}
-	errChan := make(chan error)
-	endChan := make(chan struct{})
+	errChan := make(chan error, _lenSharding)
+	endChan := make(chan struct{}, 1)
 	for _, sharding := range d.sharding {
 		d.worker {{.ChanSign}} struct{}{}
 		wg.Add(1)
@@ -2879,7 +2879,8 @@ func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}
 			}
 		}
 	}
-	if len(f.sharding) == 0 {
+	_lenSharding := len(f.sharding)
+	if _lenSharding == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
 	var cancel context.CancelFunc
@@ -2887,9 +2888,9 @@ func (f *_shardingFirst) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}
 	defer cancel()
 	_condLen := len(f.conditionOpts)
 	wg := sync.WaitGroup{}
-	endChan := make(chan struct{})
-	errChan := make(chan error)
-	resultChan := make(chan *{{.ModelName}}.{{.StructName}})
+	endChan := make(chan struct{}, 1)
+	errChan := make(chan error, _lenSharding)
+	resultChan := make(chan *{{.ModelName}}.{{.StructName}}, _lenSharding)
 	for _, sharding := range f.sharding {
 		f.worker {{.ChanSign}} struct{}{}
 		wg.Add(1)
@@ -3100,7 +3101,8 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 			}
 		}
 	}
-	if len(l.sharding) == 0 {
+	_lenSharding := len(l.sharding)
+	if _lenSharding == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
 	var cancel context.CancelFunc
@@ -3108,9 +3110,9 @@ func (l *_shardingLast) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 	defer cancel()
 	_condLen := len(l.conditionOpts)
 	wg := sync.WaitGroup{}
-	endChan := make(chan struct{})
-	errChan := make(chan error)
-	resultChan := make(chan *{{.ModelName}}.{{.StructName}})
+	endChan := make(chan struct{}, 1)
+	errChan := make(chan error, _lenSharding)
+	resultChan := make(chan *{{.ModelName}}.{{.StructName}}, _lenSharding)
 	for _, sharding := range l.sharding {
 		l.worker {{.ChanSign}} struct{}{}
 		wg.Add(1)
@@ -3410,9 +3412,10 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 	_condLen := len(l.conditionOpts)
 	wg := sync.WaitGroup{}
 	_count_ := int64(0)
-	_list_ := make([][]*{{.ModelName}}.{{.StructName}}, len(slList))
-	endChan := make(chan struct{})
-	errChan := make(chan error)
+	lenSlList := len(slList)
+	_list_ := make([][]*{{.ModelName}}.{{.StructName}}, lenSlList)
+	endChan := make(chan struct{}, 1)
+	errChan := make(chan error, lenSlList)
 	for k, v := range slList {
 		l.worker {{.ChanSign}} struct{}{}
 		wg.Add(1)
@@ -3429,9 +3432,10 @@ func (l *_shardingList) Do(ctx context.Context) ([]*{{.ModelName}}.{{.StructName
 			}()
 			defer wg.Done()
 			_wg := &sync.WaitGroup{}
-			_endChan := make(chan struct{})
-			_errChan := make(chan error)
-			__list := make([][]*{{.ModelName}}.{{.StructName}}, len(v.List))
+			_endChan := make(chan struct{}, 1)
+			_lenList := len(v.List)
+			_errChan := make(chan error, _lenList)
+			__list := make([][]*{{.ModelName}}.{{.StructName}}, _lenList)
 			for kk, vv := range v.List {
 				l.worker {{.ChanSign}} struct{}{}
 				_wg.Add(1)
@@ -3633,8 +3637,8 @@ func (s *_shardingSum) Do(ctx context.Context) (decimal.Decimal, map[{{.Sharding
 	_condLen := len(s.conditionOpts)
 	wg := sync.WaitGroup{}
 	sm := sync.Map{}
-	errChan := make(chan error)
-	endChan := make(chan struct{})
+	errChan := make(chan error, _lenSharding)
+	endChan := make(chan struct{}, 1)
 	for _, sharding := range s.sharding {
 		s.worker {{.ChanSign}} struct{}{}
 		wg.Add(1)
@@ -3854,7 +3858,8 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 			}
 		}
 	}
-	if len(t.sharding) == 0 {
+	_lenSharding := len(t.sharding)
+	if _lenSharding == 0 {
 		return nil, gorm.ErrRecordNotFound
 	}
 	var cancel context.CancelFunc
@@ -3862,9 +3867,9 @@ func (t *_shardingTake) Do(ctx context.Context) (*{{.ModelName}}.{{.StructName}}
 	defer cancel()
 	_condLen := len(t.conditionOpts)
 	wg := sync.WaitGroup{}
-	endChan := make(chan struct{})
-	errChan := make(chan error)
-	resultChan := make(chan *{{.ModelName}}.{{.StructName}})
+	endChan := make(chan struct{}, 1)
+	errChan := make(chan error, _lenSharding)
+	resultChan := make(chan *{{.ModelName}}.{{.StructName}}, _lenSharding)
 	for _, sharding := range t.sharding {
 		t.worker {{.ChanSign}} struct{}{}
 		wg.Add(1)
@@ -4060,8 +4065,8 @@ func (u *_shardingUpdate) Do(ctx context.Context) (int64, map[{{.ShardingKeyType
 	_condLen := len(u.conditionOpts)
 	sm := sync.Map{}
 	wg := sync.WaitGroup{}
-	errChan := make(chan error)
-	endChan := make(chan struct{})
+	errChan := make(chan error, _lenSharding)
+	endChan := make(chan struct{}, 1)
 	for _, sharding := range u.sharding {
 		u.worker {{.ChanSign}} struct{}{}
 		wg.Add(1)
