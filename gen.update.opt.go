@@ -154,7 +154,7 @@ func (r *Repository) genUpdateOpt(rt reflect.Type, _data *base) (updates []Updat
 			continue
 		}
 		fieldType := strings.Trim(field.Type.String(), "*")
-
+		fieldName := escapeKeyword(field.Name)
 		if !r.isDecimal(typ) {
 			update := fmt.Sprintf(`
 func Update%[1]s(v %[2]s) UpdateOption {
@@ -165,7 +165,7 @@ func Update%[1]s(v %[2]s) UpdateOption {
 		return %[3]s.q.%[4]s.%[1]s.Value(v)
 	}
 }
-`, field.Name, fieldType, _data.abbr, rt.Name())
+`, fieldName, fieldType, _data.abbr, rt.Name())
 			updates = append(updates, Update(update))
 		}
 
@@ -174,13 +174,13 @@ func Update%[1]s(v %[2]s) UpdateOption {
 		}
 
 		if r.isInt(typ) {
-			updates = append(updates, r.intUpdate(field.Name, fieldType, rt, _data)...)
+			updates = append(updates, r.intUpdate(fieldName, fieldType, rt, _data)...)
 		}
 		if r.isDecimal(typ) {
 			_pkg.decimal = true
 			_pkg.pf = true
 			_pkg.pfv = true
-			updates = append(updates, r.decimalUpdate(field.Name, fieldType, rt, _data)...)
+			updates = append(updates, r.decimalUpdate(fieldName, fieldType, rt, _data)...)
 		}
 
 		if !strings.Contains(typ, "*") {
@@ -197,7 +197,7 @@ func Update%[1]sNull() UpdateOption {
 		return %[2]s.q.%[3]s.%[1]s.Null()
 	}
 }
-`, field.Name, _data.abbr, rt.Name())
+`, fieldName, _data.abbr, rt.Name())
 		updates = append(updates, Update(update))
 	}
 
