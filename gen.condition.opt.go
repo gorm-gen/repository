@@ -706,30 +706,31 @@ func (r *Repository) genConditionOpt(rt reflect.Type, _data *base) (conditions [
 			continue
 		}
 		fieldType := strings.Trim(field.Type.String(), "*")
+		fieldName := escapeKeyword(field.Name)
 		if r.isInt(typ) {
-			conditions = append(conditions, r.intCondition(field.Name, fieldType, rt, _data)...)
+			conditions = append(conditions, r.intCondition(fieldName, fieldType, rt, _data)...)
 		}
 		if r.isString(typ) {
 			_pkg.string = true
-			conditions = append(conditions, r.stringCondition(field.Name, fieldType, rt, _data)...)
+			conditions = append(conditions, r.stringCondition(fieldName, fieldType, rt, _data)...)
 		}
 		if r.isTime(typ) {
 			_pkg.time = true
-			conditions = append(conditions, r.timeCondition(field.Name, fieldType, rt, _data)...)
+			conditions = append(conditions, r.timeCondition(fieldName, fieldType, rt, _data)...)
 		}
 		if r.isDecimal(typ) {
 			_pkg.decimal = true
 			_pkg.pf = true
 			_pkg.pfv = true
-			conditions = append(conditions, r.decimalCondition(field.Name, fieldType, rt, _data)...)
+			conditions = append(conditions, r.decimalCondition(fieldName, fieldType, rt, _data)...)
 		}
 		if r.isBool(typ) {
-			conditions = append(conditions, r.boolCondition(field.Name, fieldType, rt, _data)...)
+			conditions = append(conditions, r.boolCondition(fieldName, fieldType, rt, _data)...)
 		}
 		if r.isDeleted(typ) {
 			_pkg.decimal = true
 			_pkg.pf = true
-			conditions = append(conditions, r.deletedCondition(field.Name, rt, _data)...)
+			conditions = append(conditions, r.deletedCondition(fieldName, rt, _data)...)
 		}
 
 		if !strings.Contains(typ, "*") && fieldType != "gorm.DeletedAt" {
@@ -745,7 +746,7 @@ func Condition%[1]sIsNull() ConditionOption {
 		return %[2]s.q.%[3]s.%[1]s.IsNull()
 	}
 }
-`, field.Name, _data.abbr, rt.Name())
+`, fieldName, _data.abbr, rt.Name())
 		conditions = append(conditions, Condition(condition))
 
 		condition = fmt.Sprintf(`
@@ -757,7 +758,7 @@ func Condition%[1]sIsNotNull() ConditionOption {
 		return %[2]s.q.%[3]s.%[1]s.IsNotNull()
 	}
 }
-`, field.Name, _data.abbr, rt.Name())
+`, fieldName, _data.abbr, rt.Name())
 		conditions = append(conditions, Condition(condition))
 	}
 
