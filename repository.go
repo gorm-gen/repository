@@ -114,7 +114,7 @@ func (r *Repository) generate(model interface{}, shardingStructName string) erro
 		modelName: modelName,
 	}
 	if _base.abbr == "v" {
-		_base.abbr = "_v"
+		_base.abbr = "vv"
 	}
 
 	// base.go
