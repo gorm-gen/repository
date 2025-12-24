@@ -8,7 +8,7 @@ require (
 	github.com/gorm-gen/sharding v0.0.1
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/shopspring/decimal v1.4.0
-	go.uber.org/zap v1.27.0
+	go.uber.org/zap v1.27.1
 	gorm.io/gen v0.3.27
 	gorm.io/gorm v1.31.1
 )
@@ -22,11 +22,11 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/longbridgeapp/sqlparser v0.3.2 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/exp v0.0.0-20251023183803-a4bb9ffd2546 // indirect
-	golang.org/x/mod v0.30.0 // indirect
-	golang.org/x/sync v0.18.0 // indirect
-	golang.org/x/text v0.31.0 // indirect
-	golang.org/x/tools v0.38.0 // indirect
+	golang.org/x/exp v0.0.0-20251219203646-944ab1f22d93 // indirect
+	golang.org/x/mod v0.31.0 // indirect
+	golang.org/x/sync v0.19.0 // indirect
+	golang.org/x/text v0.32.0 // indirect
+	golang.org/x/tools v0.40.0 // indirect
 	gorm.io/datatypes v1.2.7 // indirect
 	gorm.io/driver/mysql v1.6.0 // indirect
 	gorm.io/hints v1.1.2 // indirect

@@ -113,6 +113,9 @@ func (r *Repository) generate(model interface{}, shardingStructName string) erro
 		paths:     paths,
 		modelName: modelName,
 	}
+	if _base.abbr == "v" {
+		_base.abbr = "_v"
+	}
 
 	// base.go
 	if err := r.genBase(rt, _base); err != nil {
