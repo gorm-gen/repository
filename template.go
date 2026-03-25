@@ -316,6 +316,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
+	"gorm.io/gen/field"
 
 	"{{.GenQueryPkg}}"
 
@@ -332,6 +333,7 @@ type _create struct {
 	values    []*{{.ModelName}}.{{.StructName}}
 	batchSize int
 	scopes    []func(gen.Dao) gen.Dao
+	omits     []field.Expr
 	trace     bool
 }
 
@@ -342,6 +344,7 @@ func ({{.Abbr}} *{{.StructName}}) Create() *_create {
 		unscoped: {{.Abbr}}.unscoped,
 		values:   make([]*{{.ModelName}}.{{.StructName}}, 0),
 		scopes:   make([]func(gen.Dao) gen.Dao, 0),
+		omits:    make([]field.Expr, 0),
 	}
 }
 
@@ -374,6 +377,12 @@ func (c *_create) Unscoped(unscoped ...bool) *_create {
 
 func (c *_create) Scopes(funcs ...func(gen.Dao) gen.Dao) *_create {
 	c.scopes = append(c.scopes, funcs...)
+	return c
+}
+
+// Omit 执行创建时忽略字段
+func (c *_create) Omit(field ...field.Expr) *_create {
+	c.omits = append(c.omits, field...)
 	return c
 }
 
@@ -423,6 +432,17 @@ func (c *_create) Do(ctx context.Context) (err error) {
 	}
 	if len(c.scopes) > 0 {
 		cr = cr.Scopes(c.scopes...)
+	}
+	if _len := len(c.omits); _len > 0 {
+		if c.core.newTableName == nil {
+			cr = cr.Omit(c.omits...)
+		} else {
+			fs := make([]field.Expr, 0, _len)
+			for _, v := range c.omits {
+				fs = append(fs, field.NewField(*c.core.newTableName, v.ColumnName().String()))
+			}
+			cr = cr.Omit(fs...)
+		}
 	}
 	if length > 1 && c.batchSize > 0 {
 		err = cr.CreateInBatches(c.values, c.batchSize)
@@ -2375,6 +2395,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gen"
+	"gorm.io/gen/field"
 
 	"{{.GenQueryPkg}}"
 
@@ -2389,6 +2410,7 @@ type _shardingCreate struct {
 	values    []*{{.ModelName}}.{{.StructName}}
 	batchSize int
 	scopes    []func(gen.Dao) gen.Dao
+	omits     []field.Expr
 	trace     bool
 }
 
@@ -2399,6 +2421,7 @@ func ({{.Abbr}} *{{.StructName}}) ShardingCreate() *_shardingCreate {
 		unscoped: {{.Abbr}}.unscoped,
 		values:   make([]*{{.ModelName}}.{{.StructName}}, 0),
 		scopes:   make([]func(gen.Dao) gen.Dao, 0),
+		omits:    make([]field.Expr, 0),
 	}
 }
 
@@ -2431,6 +2454,12 @@ func (c *_shardingCreate) Unscoped(unscoped ...bool) *_shardingCreate {
 
 func (c *_shardingCreate) Scopes(funcs ...func(gen.Dao) gen.Dao) *_shardingCreate {
 	c.scopes = append(c.scopes, funcs...)
+	return c
+}
+
+// Omit 执行创建时忽略字段
+func (c *_shardingCreate) Omit(field ...field.Expr) *_shardingCreate {
+	c.omits = append(c.omits, field...)
 	return c
 }
 
@@ -2470,6 +2499,7 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 			Tx(c.tx).
 			QueryTx(c.qTx).
 			Unscoped(c.unscoped).
+			Omit(c.omits).
 			BatchSize(bs).
 			Values(c.values...).
 			Scopes(c.scopes...).
@@ -2484,6 +2514,7 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 			Tx(c.tx).
 			QueryTx(c.qTx).
 			Unscoped(c.unscoped).
+			Omit(c.omits).
 			BatchSize(bs).
 			Values(c.values...).
 			Scopes(c.scopes...).
@@ -2495,6 +2526,7 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 				Tx(c.tx).
 				QueryTx(c.qTx).
 				Unscoped(c.unscoped).
+				Omit(c.omits).
 				BatchSize(bs).
 				Values(values...).
 				Scopes(c.scopes...).
@@ -2517,6 +2549,7 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 			err = c.core.Create().
 				Tx(tx).
 				Unscoped(c.unscoped).
+				Omit(c.omits).
 				BatchSize(bs).
 				Values(values...).
 				Scopes(c.scopes...).
