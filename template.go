@@ -2499,7 +2499,7 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 			Tx(c.tx).
 			QueryTx(c.qTx).
 			Unscoped(c.unscoped).
-			Omit(c.omits).
+			Omit(c.omits...).
 			BatchSize(bs).
 			Values(c.values...).
 			Scopes(c.scopes...).
@@ -2514,7 +2514,7 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 			Tx(c.tx).
 			QueryTx(c.qTx).
 			Unscoped(c.unscoped).
-			Omit(c.omits).
+			Omit(c.omits...).
 			BatchSize(bs).
 			Values(c.values...).
 			Scopes(c.scopes...).
@@ -2526,7 +2526,7 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 				Tx(c.tx).
 				QueryTx(c.qTx).
 				Unscoped(c.unscoped).
-				Omit(c.omits).
+				Omit(c.omits...).
 				BatchSize(bs).
 				Values(values...).
 				Scopes(c.scopes...).
@@ -2549,7 +2549,7 @@ func (c *_shardingCreate) Do(ctx context.Context) (err error) {
 			err = c.core.Create().
 				Tx(tx).
 				Unscoped(c.unscoped).
-				Omit(c.omits).
+				Omit(c.omits...).
 				BatchSize(bs).
 				Values(values...).
 				Scopes(c.scopes...).
